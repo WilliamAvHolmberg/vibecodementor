@@ -19,8 +19,15 @@ public static class MetricsExtensions
         // Memory cache is still needed for other services
         services.AddMemoryCache();
         
-        // Register the metrics background service
-        services.AddHostedService<SystemMetricsService>();
+        // Register the metrics background service (configurable)
+        var serviceProvider = services.BuildServiceProvider();
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+        var enableSystemMetrics = configuration.GetValue<bool>("Features:EnableSystemMetrics", true);
+        
+        if (enableSystemMetrics)
+        {
+            services.AddHostedService<SystemMetricsService>();
+        }
         
         // Register the MetricsHub for SignalR
         services.AddSignalR().AddHubOptions<MetricsHub>(options =>

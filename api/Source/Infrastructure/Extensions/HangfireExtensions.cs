@@ -29,7 +29,7 @@ public static class HangfireExtensions
 
         services.AddHangfireServer(options =>
         {
-            options.WorkerCount = Environment.ProcessorCount * 5;
+            options.WorkerCount = Math.Min(Environment.ProcessorCount * 2, 8);
             options.Queues = new[] { "default", "critical", "background" };
         });
 

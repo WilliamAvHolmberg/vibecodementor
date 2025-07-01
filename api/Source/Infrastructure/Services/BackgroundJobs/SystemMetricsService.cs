@@ -16,6 +16,7 @@ public class SystemMetricsService : BackgroundService
     private readonly IHubContext<MetricsHub> _hubContext;
     private readonly IResourceMonitor? _resourceMonitor;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IConfiguration _configuration;
     
     // For macOS fallback CPU calculation
     private TimeSpan _lastCpuTime;
@@ -25,12 +26,14 @@ public class SystemMetricsService : BackgroundService
         ILogger<SystemMetricsService> logger,
         IHubContext<MetricsHub> hubContext,
         IServiceProvider serviceProvider,
+        IConfiguration configuration,
         IResourceMonitor? resourceMonitor = null)
     {
         _logger = logger;
         _hubContext = hubContext;
         _resourceMonitor = resourceMonitor;
         _serviceProvider = serviceProvider;
+        _configuration = configuration;
         
         // Initialize fallback CPU measurement for macOS
         if (_resourceMonitor == null)
@@ -57,7 +60,8 @@ public class SystemMetricsService : BackgroundService
                 var metrics = await CollectMetricsAsync(stoppingToken);
                 await _hubContext.Clients.All.SendAsync("SystemMetrics", metrics, stoppingToken);
                 
-                await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
+                var intervalSeconds = _configuration.GetValue<int>("Features:SystemMetricsIntervalSeconds", 5);
+                await Task.Delay(TimeSpan.FromSeconds(intervalSeconds), stoppingToken);
             }
             catch (OperationCanceledException)
             {
@@ -91,8 +95,8 @@ public class SystemMetricsService : BackgroundService
             return new
             {
                 // From Microsoft.Extensions.Diagnostics.ResourceMonitoring
-                CpuUsagePercent = Math.Round(resourceUtilization.CpuUsedPercentage * 100, 1),
-                MemoryUsagePercent = Math.Round(resourceUtilization.MemoryUsedPercentage * 100, 1),
+                CpuUsagePercent = Math.Round(resourceUtilization.CpuUsedPercentage, 3),
+                MemoryUsagePercent = Math.Round(resourceUtilization.MemoryUsedPercentage, 3),
                 MemoryUsedMB = Math.Round(resourceUtilization.MemoryUsedInBytes / 1024.0 / 1024.0, 1),
                 GuaranteedMemoryMB = Math.Round(resourceUtilization.SystemResources.GuaranteedMemoryInBytes / 1024.0 / 1024.0, 1),
                 MaximumMemoryMB = Math.Round(resourceUtilization.SystemResources.MaximumMemoryInBytes / 1024.0 / 1024.0, 1),

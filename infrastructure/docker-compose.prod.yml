@@ -20,6 +20,15 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 30s
@@ -35,6 +44,15 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
     restart: unless-stopped
+    # Resource limits to prevent runaway CPU usage
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s

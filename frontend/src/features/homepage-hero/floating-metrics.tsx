@@ -53,7 +53,7 @@ function FloatingMetricCard({
 
 // Client-side metrics enhancement overlay
 export function FloatingMetrics() {
-  const { latestMetrics, isConnected, isLoading } = useDashboard();
+  const { latestMetrics } = useDashboard();
 
   const formatUptime = (minutes: number) => {
     if (minutes < 1) return `${Math.round(minutes * 60)}s`;
