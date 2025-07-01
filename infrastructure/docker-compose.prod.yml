@@ -1,0 +1,42 @@
+services:
+  nginx:
+    image: vibecodementor-nginx:latest
+    container_name: vibecodementor-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - frontend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    image: vibecodementor-frontend:latest
+    container_name: vibecodementor-frontend
+    env_file:
+      - .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  api:
+    image: vibecodementor-api:latest
+    container_name: vibecodementor-api
+    env_file:
+      - .env
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3 

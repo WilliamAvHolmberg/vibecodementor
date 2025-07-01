@@ -1,0 +1,101 @@
+---
+description: 
+globs: frontend/**/*,*.tsx,*.ts,*.css
+alwaysApply: false
+---
+# Frontend Architecture - Vertical Slices
+
+## 🎯 Philosophy: PRAGMATIC OVER PERFECT
+- **Speed over purity** - Ship features fast, refactor later
+- **Simple patterns** - Avoid over-engineering 
+- **Consistency** - Follow established patterns for AI predictability
+
+## 📁 Structure
+```
+src/
+├── features/          # Self-contained feature slices
+├── shared/           # Reusable components/hooks
+├── api/              # 🤖 ORVAL GENERATED (DO NOT EDIT)
+└── app/              # Next.js App Router
+```
+
+## 🏗️ Feature Slice Pattern
+```
+features/feature-name/
+├── index.ts          # Exports (import { X } from '@/features/auth')
+├── components/       # Feature components
+├── hooks/           # Wraps api/hooks with business logic
+└── [name]-context.tsx # Feature state (if needed)
+```
+
+## 🤖 Orval Integration - CRITICAL
+- **Generated**: `api/hooks/` (React Query) + `api/models/` (DTOs)
+- **Regenerate**: `npm run api:generate` after backend changes
+- **Pattern**: Features wrap generated hooks, add business logic
+- **🚨 NEVER EDIT**: Generated files will be overwritten
+
+## 🔧 Tech Stack
+- **Next.js 15** + **React 19** + **TypeScript 5**
+- **React Query** + **shadcn/ui** + **Tailwind CSS**
+- **Axios** (JWT auth) + **SignalR** (real-time)
+
+## 📋 Patterns
+
+### Imports
+```typescript
+// External first
+import { useState } from 'react';
+// Internal with aliases
+import { Button } from '@/shared/components/ui/button';
+import { useAuth } from '@/features/auth';
+import { useUsers } from '@/features/users'; // ✅ Cross-feature OK
+```
+
+### Components
+```typescript
+export function Component({ prop }: Props) {
+  // Hooks first
+  const { data, isLoading } = useHook();
+  
+  // Event handlers
+  const handleClick = () => {};
+  
+  // Render
+  return <div>{content}</div>;
+}
+```
+
+### API Hook Wrapping
+```typescript
+// features/users/hooks/use-users.ts
+import { useGetUsers } from '@/api/hooks'; // Generated
+
+export function useUsers() {
+  const query = useGetUsers();
+  
+  // Add business logic here
+  return {
+    ...query,
+    displayUsers: query.data?.map(u => ({
+      ...u,
+      fullName: `${u.firstName} ${u.lastName}`
+    }))
+  };
+}
+```
+
+## 🎯 Key Rules
+- ✅ Never edit `api/hooks/` or `api/models/`
+- ✅ Features CAN import from other features (be pragmatic)
+- ✅ Use Server Components by default, 'use client' when needed
+- ✅ JWT from localStorage, axios interceptors for auth
+- ✅ Wrap generated hooks in feature-specific hooks
+- ✅ Keep it simple - avoid over-engineering
+- ✅ Consistency over cleverness
+
+## 🚨 Critical Gotchas
+- **Orval regeneration** wipes `api/` folder - never edit directly
+- **'use client'** needed for hooks, state, event handlers
+- **SignalR connections** need cleanup in useEffect
+- **JWT expiry** - handle 401s gracefully
+- **Loading states** - always handle isLoading/error from React Query

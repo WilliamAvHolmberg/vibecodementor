@@ -1,0 +1,12 @@
+{
+    "mcpServers": {
+      "kanban-flow": {
+        "command": "node",
+        "args": ["/Users/williamholmberg/Documents/Programming/Private/kanbanflow-mcp-server/build/index.js"],
+        "env": {
+          "KANBAN_API_TOKEN": "vtyUJFpRvdiL7LP5xVjiqXgajm"
+        }
+      }
+    }
+  }
+    

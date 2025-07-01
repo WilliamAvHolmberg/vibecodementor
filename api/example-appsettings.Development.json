@@ -1,0 +1,39 @@
+
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=api_dev;Username=postgres;Password=postgres"
+  },
+  "Jwt": {
+    "Key": "development-secret-key-32-characters-minimum-length",
+    "Issuer": "api-dev",
+    "Audience": "api-dev",
+    "ExpiryMinutes": 1440
+  },
+  "FileStorage": {
+    "Provider": "Local",
+    "LocalPath": "uploads",
+    "R2": {
+      "AccountId": "your-r2-account-id",
+      "AccessKey": "your-r2-access-key",  
+      "SecretKey": "your-r2-secret-key",
+      "BucketName": "your-r2-bucket-name",
+      "PublicUrl": ""
+    }
+  },
+  "Email": {
+    "Provider": "Console",
+    "Resend": {
+      "ApiToken": "your-resend-api-token",
+      "FromEmail": "dev@yourdomain.com"
+    }
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Information",
+      "Microsoft.AspNetCore": "Information",
+      "Microsoft.EntityFrameworkCore": "Information",
+      "Hangfire": "Information"
+    }
+  }
+} 

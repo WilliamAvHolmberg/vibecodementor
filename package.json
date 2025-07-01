@@ -1,0 +1,25 @@
+{
+  "name": "vibecodementor",
+  "version": "1.0.0",
+  "description": "VibeCodeMentor - AI-powered development platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start:db": "docker-compose up postgres -d",
+    "start:api": "dotenv -f .env.local -- dotnet run --project api",
+    "start:frontend": "dotenv -f .env -- sh -c 'cd frontend && npm run dev'",
+    "build": "./scripts/build.sh",
+    "deploy": "./scripts/deploy.sh",
+    "setup:server": "./scripts/setup-server.sh",
+    "setup:local": "cp .env.local.template .env.local && echo '✅ Created .env.local - please edit with your secrets'",
+    "setup:prod": "cp .env.template .env && echo '✅ Created .env - please edit with your production secrets'",
+    "install:all": "npm install && cd frontend && npm install"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.4.2",
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 
