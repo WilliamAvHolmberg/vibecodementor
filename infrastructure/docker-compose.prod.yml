@@ -24,10 +24,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
+          cpus: '0.2'
           memory: 256M
         reservations:
-          cpus: '0.25'
+          cpus: '0.1'
           memory: 128M
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
@@ -48,10 +48,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
+          cpus: '0.8'
           memory: 512M
         reservations:
-          cpus: '0.5'
+          cpus: '0.3'
           memory: 256M
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
