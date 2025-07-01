@@ -2,6 +2,8 @@
 
 > **Fast-track AI development** with .NET 9 + Next.js 15 starter optimized for **vertical slice architecture** and rapid prototyping.
 
+🌐 **[Live Demo: vibecodementor.net](https://vibecodementor.net)**
+
 ## 🤖 Why This Stack?
 
 **Built for AI-driven development:**

@@ -142,3 +142,5 @@ temp/
 *~ 
 
 .server-ip
+
+.cursor/mcp.json
