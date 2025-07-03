@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import { useAuth } from "@/features/auth";
-import { User, LogOut, Sparkles, Zap, Menu, ChevronDown } from "lucide-react";
+import { User, LogOut, Zap, Menu, ChevronDown, GitBranch, ExternalLink } from "lucide-react";
 
 // Navigation sections (same as floating nav)
 const sections = [
@@ -126,15 +126,24 @@ export function AppHeader() {
                 </Button>
               </div>
             ) : (
-              // Unauthenticated State
+              // Clone Repo CTA
               <div className="flex items-center gap-2">
                 <Button 
+                  asChild
                   variant="ghost" 
                   size="sm" 
-                  className="flex items-center gap-2 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 hover:from-purple-100 hover:to-blue-100 dark:hover:from-purple-900/30 dark:hover:to-blue-900/30 border border-purple-200/50 dark:border-purple-800/50 text-purple-700 dark:text-purple-300 font-medium transition-all duration-200"
+                  className="flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 hover:from-emerald-100 hover:to-blue-100 dark:hover:from-emerald-900/30 dark:hover:to-blue-900/30 border border-emerald-200/50 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  <span>Sign In</span>
+                  <a 
+                    href="https://github.com/WilliamAvHolmberg/vibecodementor" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <GitBranch className="w-4 h-4" />
+                    <span className="font-semibold">CLONE REPO</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 </Button>
               </div>
             )}

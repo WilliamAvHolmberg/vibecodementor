@@ -16,10 +16,10 @@
     "install:all": "npm install && cd frontend && npm install"
   },
   "devDependencies": {
-    "dotenv-cli": "^7.4.2",
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "dotenv-cli": "^7.4.2"
   },
   "engines": {
     "node": ">=18.0.0"
   }
-} 
+}

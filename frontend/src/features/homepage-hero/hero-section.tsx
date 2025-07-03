@@ -21,22 +21,49 @@ export function HeroSection() {
         {/* Main Headline */}
         <h1 className="text-5xl md:text-7xl font-light text-gray-900 dark:text-white mb-6 tracking-tight">
           <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
-            AI-Generated
+            AI-Powered
           </span>
           <br />
           <span className="text-gray-800 dark:text-gray-200">
-            Full-Stack Template
+            Full-Stack Platform
           </span>
         </h1>
 
         {/* Subtitle */}
         <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 font-light leading-relaxed">
-          Next.js 15 + .NET 9 + SignalR + PostgreSQL
+          OpenRouter + Next.js 15 + .NET 9 + SignalR + PostgreSQL
         </p>
+
+        {/* Core Features */}
+        <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+          <div className="text-center p-6 bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl mb-4">
+              <span className="text-white text-lg">🤖</span>
+            </div>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">OpenRouter AI</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Switch between 200+ AI models with custom function calling</p>
+          </div>
+          
+          <div className="text-center p-6 bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4">
+              <span className="text-white text-lg">⚡</span>
+            </div>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Real-time Everything</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">SignalR + PostgreSQL for live data and instant updates</p>
+          </div>
+          
+          <div className="text-center p-6 bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl mb-4">
+              <span className="text-white text-lg">🔧</span>
+            </div>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Custom AI Tools</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Easily add function calls to make AI read your data</p>
+          </div>
+        </div>
 
         {/* Tech Stack Badges */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {['Next.js', '.NET 9', 'SignalR', 'PostgreSQL', 'Tailwind'].map((tech) => (
+          {['OpenRouter', 'Next.js 15', '.NET 9', 'SignalR', 'PostgreSQL', 'Tailwind'].map((tech) => (
             <span
               key={tech}
               className="px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-full text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-200/50 dark:border-gray-700/50 shadow-lg"

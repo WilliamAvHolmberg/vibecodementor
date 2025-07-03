@@ -4,6 +4,7 @@ import { MetricsDashboard } from '@/features/dashboard';
 import { ImageGallery } from '@/features/homepage-gallery';
 import { AuthShowcase } from '@/features/homepage-auth';
 import { CTASection } from '@/features/homepage-cta';
+import { AnalyticsAssistantSection } from '@/features/analytics-assistant';
 
 export default function Home() {
   return (
@@ -60,6 +61,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Analytics Assistant Section */}
+      <AnalyticsAssistantSection />
 
       {/* Image Gallery Section */}
       <ImageGallery />

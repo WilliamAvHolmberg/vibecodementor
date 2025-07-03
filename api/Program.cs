@@ -20,6 +20,7 @@ builder.Services.AddOfflineFirstServices(builder.Configuration);
 builder.Services.AddRealTimeServices();
 builder.Services.AddMetricsServices();
 builder.Services.AddRateLimitingServices();
+builder.Services.AddOpenRouterServices(builder.Configuration);
 builder.Services.AddSwaggerServices();
 
 var app = builder.Build();

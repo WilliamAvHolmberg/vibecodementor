@@ -3,6 +3,9 @@ const nextConfig = {
   // Enable standalone output for Docker deployment
   output: 'standalone',
   
+  // Disable compression in development to fix SSE streaming
+  compress: process.env.NODE_ENV === 'production',
+  
   // Configure for Docker deployment
   compiler: {
     // Remove console.logs in production
@@ -28,9 +31,16 @@ const nextConfig = {
   // Configure for production optimization
   poweredByHeader: false,
   reactStrictMode: true,
+
   
   async rewrites() {
     return [
+      {
+        source: '/api/openrouter/tools/chat/stream',
+        destination: 'http://localhost:5001/api/openrouter/tools/chat/stream',
+        // Configure for streaming
+        basePath: false,
+      },
       {
         source: '/api/:path*',
         destination: 'http://localhost:5001/api/:path*',
