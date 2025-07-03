@@ -4,6 +4,7 @@ using Source.Features.Users.Models;
 using Source.Features.Chat.Models;
 using Source.Features.Analytics.Models;
 using Source.Features.Files.Models;
+using Source.Features.Newsletter.Models;
 using api.Source.Infrastructure.Services.BackgroundJobs;
 
 namespace Source.Infrastructure;
@@ -15,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Visit> Visits { get; set; }
     public DbSet<DailyVisitStats> DailyVisitStats { get; set; }
     public DbSet<UploadedImage> UploadedImages { get; set; }
+    public DbSet<NewsletterSubscription> NewsletterSubscriptions { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -89,6 +91,22 @@ public class ApplicationDbContext : IdentityDbContext<User>
             entity.Property(e => e.UploadedAt)
                 .HasColumnType("timestamp with time zone")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+        });
+
+        // Configure NewsletterSubscription entity
+        builder.Entity<NewsletterSubscription>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Email).IsUnique().HasDatabaseName("IX_NewsletterSubscriptions_Email");
+            entity.HasIndex(e => e.SubscribedAt).HasDatabaseName("IX_NewsletterSubscriptions_SubscribedAt");
+            entity.HasIndex(e => new { e.IsActive, e.SubscribedAt }).HasDatabaseName("IX_NewsletterSubscriptions_IsActive_SubscribedAt");
+            
+            entity.Property(e => e.SubscribedAt)
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+                
+            entity.Property(e => e.UnsubscribedAt)
+                .HasColumnType("timestamp with time zone");
         });
     }
 } 

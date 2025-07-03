@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from '@/shared/components/ui/button';
-import { Github, Code, Mail, ArrowUp } from 'lucide-react';
+import { Github, Code, Mail } from 'lucide-react';
 
 export function CTASection() {
   const handleCollaboration = () => {
-    // Scroll to auth section to encourage sign up
-    const authSection = document.getElementById('auth');
-    if (authSection) {
-      authSection.scrollIntoView({ behavior: 'smooth' });
+    // Scroll to newsletter section to encourage subscription
+    const newsletterSection = document.getElementById('newsletter');
+    if (newsletterSection) {
+      newsletterSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -39,11 +39,11 @@ export function CTASection() {
             <p className="text-gray-100 mb-6 leading-relaxed">
               Get the complete codebase and start building immediately. Everything is configured and ready to go.
             </p>
-            <Button 
+            <Button
               asChild
               className="w-full bg-transparent border-2 border-white/80 hover:bg-white/20 text-gray-100 hover:border-white transition-all duration-200 backdrop-blur-sm font-medium"
             >
-              <a 
+              <a
                 href="https://github.com/WilliamAvHolmberg/vibecodementor"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -60,19 +60,19 @@ export function CTASection() {
             <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <Code className="w-8 h-8 text-white" aria-hidden="true" />
             </div>
-            <h3 className="text-2xl font-semibold mb-4">Let&apos;s Build Together</h3>
+            <h3 className="text-2xl font-semibold mb-4">Stay Updated</h3>
             <p className="text-gray-100 mb-6 leading-relaxed">
-              Want to collaborate or need help customizing this template for your specific needs?
+              Get the latest updates on new features, tutorials, and AI development insights.
             </p>
-            <Button 
+            <Button
               onClick={handleCollaboration}
               className="w-full bg-transparent border-2 border-white/80 hover:bg-white/20 text-gray-100 hover:border-white transition-all duration-200 backdrop-blur-sm font-medium"
             >
-              <ArrowUp className="w-4 h-4 mr-2" aria-hidden="true" />
-              Start Collaboration
+              <Mail className="w-4 h-4 mr-2" aria-hidden="true" />
+              Join Newsletter
             </Button>
             <div className="mt-4 text-sm text-gray-400">
-              Available for consulting & development
+              No spam • Unsubscribe anytime
             </div>
           </article>
 
@@ -85,11 +85,11 @@ export function CTASection() {
             <p className="text-gray-100 mb-6 leading-relaxed">
               Need a full-stack developer who builds with AI? Let&apos;s discuss your next project.
             </p>
-            <Button 
+            <Button
               asChild
               className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              <a 
+              <a
                 href="mailto:william.av.holmberg@gmail.com?subject=VibeCodeMentor%20-%20Project%20Collaboration&body=Hi!%20I%20saw%20your%20VibeCodeMentor%20template%20and%20would%20like%20to%20discuss%20a%20project.%20Can%20we%20set%20up%20a%20time%20to%20chat?"
                 aria-label="Send email to William for project collaboration"
               >

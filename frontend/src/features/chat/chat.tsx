@@ -170,9 +170,9 @@ function ChatContainer() {
   const { isConnected } = useChatContext();
 
   return (
-    <div className="flex gap-4 h-[480px] pt-16 md:pt-20 pr-20 md:pr-24">
+    <div className="h-[480px]">
       {/* Chat Messages */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
+      <div className="flex-1 flex flex-col bg-white dark:bg-gray-900 overflow-hidden h-full">
         {/* Clean Header with Status */}
         <div className="flex items-center justify-between px-6 py-3 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-3">

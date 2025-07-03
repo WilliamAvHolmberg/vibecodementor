@@ -30,6 +30,7 @@ import type {
   CurrentUserResponseDTO,
   GetApiChatMessagesParams,
   GetApiFilesImagesLatestParams,
+  GetApiOpenrouterToolsChatStreamParams,
   GetApiUsersParams,
   LoginRequestDTO,
   LoginUserResponseDTO,
@@ -39,8 +40,10 @@ import type {
   RegisterRequestDTO,
   RegisterUserResponseDTO,
   RegisterVisitRequestDTO,
+  SaveEmailToNewsletterResponseDTO,
   SendOtpRequestDTO,
   SendOtpResponseDTO,
+  SubscribeToNewsletterRequestDTO,
   UpdateUserRequestDTO,
   VerifyOtpRequestDTO,
   VerifyOtpResponseDTO
@@ -956,6 +959,312 @@ export function useGetApiFilesInfoFilePath<TData = Awaited<ReturnType<typeof get
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetApiFilesInfoFilePathQueryOptions(filePath,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const postApiNewsletterSubscribe = (
+    subscribeToNewsletterRequestDTO: SubscribeToNewsletterRequestDTO,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<SaveEmailToNewsletterResponseDTO>(
+      {url: `/api/Newsletter/subscribe`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: subscribeToNewsletterRequestDTO, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiNewsletterSubscribeMutationOptions = <TError = ErrorType<ProblemDetailsDTO>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiNewsletterSubscribe>>, TError,{data: SubscribeToNewsletterRequestDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiNewsletterSubscribe>>, TError,{data: SubscribeToNewsletterRequestDTO}, TContext> => {
+
+const mutationKey = ['postApiNewsletterSubscribe'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiNewsletterSubscribe>>, {data: SubscribeToNewsletterRequestDTO}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiNewsletterSubscribe(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiNewsletterSubscribeMutationResult = NonNullable<Awaited<ReturnType<typeof postApiNewsletterSubscribe>>>
+    export type PostApiNewsletterSubscribeMutationBody = SubscribeToNewsletterRequestDTO
+    export type PostApiNewsletterSubscribeMutationError = ErrorType<ProblemDetailsDTO>
+
+    export const usePostApiNewsletterSubscribe = <TError = ErrorType<ProblemDetailsDTO>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiNewsletterSubscribe>>, TError,{data: SubscribeToNewsletterRequestDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiNewsletterSubscribe>>,
+        TError,
+        {data: SubscribeToNewsletterRequestDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiNewsletterSubscribeMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const getApiOpenrouterToolsConversationsConversationId = (
+    conversationId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<void>(
+      {url: `/api/openrouter/tools/conversations/${conversationId}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetApiOpenrouterToolsConversationsConversationIdQueryKey = (conversationId: string,) => {
+    return [`/api/openrouter/tools/conversations/${conversationId}`] as const;
+    }
+
+    
+export const getGetApiOpenrouterToolsConversationsConversationIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError = ErrorType<unknown>>(conversationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiOpenrouterToolsConversationsConversationIdQueryKey(conversationId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>> = ({ signal }) => getApiOpenrouterToolsConversationsConversationId(conversationId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(conversationId),  staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiOpenrouterToolsConversationsConversationIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>>
+export type GetApiOpenrouterToolsConversationsConversationIdQueryError = ErrorType<unknown>
+
+
+export function useGetApiOpenrouterToolsConversationsConversationId<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError = ErrorType<unknown>>(
+ conversationId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiOpenrouterToolsConversationsConversationId<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError = ErrorType<unknown>>(
+ conversationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiOpenrouterToolsConversationsConversationId<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError = ErrorType<unknown>>(
+ conversationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiOpenrouterToolsConversationsConversationId<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError = ErrorType<unknown>>(
+ conversationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsConversationsConversationId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiOpenrouterToolsConversationsConversationIdQueryOptions(conversationId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getApiOpenrouterToolsModels = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<void>(
+      {url: `/api/openrouter/tools/models`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetApiOpenrouterToolsModelsQueryKey = () => {
+    return [`/api/openrouter/tools/models`] as const;
+    }
+
+    
+export const getGetApiOpenrouterToolsModelsQueryOptions = <TData = Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiOpenrouterToolsModelsQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>> = ({ signal }) => getApiOpenrouterToolsModels(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiOpenrouterToolsModelsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>>
+export type GetApiOpenrouterToolsModelsQueryError = ErrorType<unknown>
+
+
+export function useGetApiOpenrouterToolsModels<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>,
+          TError,
+          Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiOpenrouterToolsModels<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>,
+          TError,
+          Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiOpenrouterToolsModels<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiOpenrouterToolsModels<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsModels>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiOpenrouterToolsModelsQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getApiOpenrouterToolsChatStream = (
+    params?: GetApiOpenrouterToolsChatStreamParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<void>(
+      {url: `/api/openrouter/tools/chat/stream`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+export const getGetApiOpenrouterToolsChatStreamQueryKey = (params?: GetApiOpenrouterToolsChatStreamParams,) => {
+    return [`/api/openrouter/tools/chat/stream`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetApiOpenrouterToolsChatStreamQueryOptions = <TData = Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError = ErrorType<unknown>>(params?: GetApiOpenrouterToolsChatStreamParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiOpenrouterToolsChatStreamQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>> = ({ signal }) => getApiOpenrouterToolsChatStream(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiOpenrouterToolsChatStreamQueryResult = NonNullable<Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>>
+export type GetApiOpenrouterToolsChatStreamQueryError = ErrorType<unknown>
+
+
+export function useGetApiOpenrouterToolsChatStream<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError = ErrorType<unknown>>(
+ params: undefined |  GetApiOpenrouterToolsChatStreamParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>,
+          TError,
+          Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiOpenrouterToolsChatStream<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError = ErrorType<unknown>>(
+ params?: GetApiOpenrouterToolsChatStreamParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>,
+          TError,
+          Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiOpenrouterToolsChatStream<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError = ErrorType<unknown>>(
+ params?: GetApiOpenrouterToolsChatStreamParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiOpenrouterToolsChatStream<TData = Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError = ErrorType<unknown>>(
+ params?: GetApiOpenrouterToolsChatStreamParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOpenrouterToolsChatStream>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiOpenrouterToolsChatStreamQueryOptions(params,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

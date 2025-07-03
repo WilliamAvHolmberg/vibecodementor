@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "start:db": "docker-compose up postgres -d",
-    "start:api": "dotenv -f .env.local -- dotnet run --project api",
-    "start:frontend": "dotenv -f .env -- sh -c 'cd frontend && npm run dev'",
+    "start:api": "dotenv -e .env.local -- dotnet run --project api",
+    "start:frontend": "dotenv -e .env.local -- sh -c 'cd frontend && npm run dev'",
     "build": "./scripts/build.sh",
     "deploy": "./scripts/deploy.sh",
     "setup:server": "./scripts/setup-server.sh",

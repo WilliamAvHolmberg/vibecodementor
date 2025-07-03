@@ -35,6 +35,8 @@ public static class ServicesExtensions
         // File Storage Service - Configurable provider
         var fileStorageProvider = configuration["FileStorage:Provider"] ?? "Local";
         Console.WriteLine($"File Storage Provider: {fileStorageProvider}");
+        Console.WriteLine($"Connection string from env: {configuration["ConnectionStrings:DefaultConnection"]}");
+
         switch (fileStorageProvider.ToUpperInvariant())
         {
             case "R2":
