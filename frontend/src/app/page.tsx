@@ -1,5 +1,6 @@
 import { HeroSection } from '@/features/homepage-vision';
 import { ShowcaseIntro } from '@/features/homepage-showcase';
+import { DigitalOceanSection } from '@/features/digitalocean-showcase';
 import { Chat } from '@/features/chat';
 import { MetricsDashboard } from '@/features/dashboard';
 import { ImageGallery } from '@/features/homepage-gallery';
@@ -11,13 +12,13 @@ import { AnalyticsAssistantSection } from '@/features/analytics-assistant';
 export default function Home() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
-      
+
       {/* Hero Section - VibeCodeMentor.net Vision & Repository */}
       <HeroSection />
-      
+
       {/* Showcase Intro - Built-in Features */}
       <ShowcaseIntro />
-      
+
       {/* Chat Section */}
       <section id="chat" className="py-12 sm:py-20 px-3 sm:px-6">
         <div className="max-w-6xl mx-auto">
@@ -30,10 +31,10 @@ export default function Home() {
               Real-Time Chat with <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">SignalR</span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto leading-relaxed mb-4 sm:mb-6">
-              Built with Microsoft SignalR for blazing-fast real-time communication. No polling, no delays - just instant messaging 
+              Built with Microsoft SignalR for blazing-fast real-time communication. No polling, no delays - just instant messaging
               with PostgreSQL persistence and automatic reconnection handling.
             </p>
-            
+
             {/* Technical Highlights */}
             <div className="flex justify-center gap-3 sm:gap-6 flex-wrap">
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
@@ -50,7 +51,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
+
           {/* Chat Component */}
           <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/20 dark:border-gray-700/20 overflow-hidden">
             <div className="p-3 sm:p-4 border-b border-gray-200/20 dark:border-gray-700/20 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
@@ -75,10 +76,10 @@ export default function Home() {
               Live Analytics <span className="bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">Dashboard</span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto leading-relaxed mb-4 sm:mb-6">
-              Real-time system metrics, user analytics, and performance monitoring powered by background services and 
+              Real-time system metrics, user analytics, and performance monitoring powered by background services and
               SignalR updates. Track everything from server performance to user behavior patterns.
             </p>
-            
+
             {/* Analytics Features */}
             <div className="flex justify-center gap-3 sm:gap-6 flex-wrap">
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-full">
@@ -95,7 +96,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
+
           {/* Analytics Dashboard */}
           <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/20 dark:border-gray-700/20 overflow-hidden">
             <div className="p-3 sm:p-4 border-b border-gray-200/20 dark:border-gray-700/20 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20">
@@ -118,6 +119,9 @@ export default function Home() {
 
       {/* Auth Showcase Section */}
       <AuthShowcase />
+
+      {/* DigitalOcean Section - Infrastructure Philosophy */}
+      <DigitalOceanSection />
 
       {/* Newsletter Section */}
       <NewsletterSignup />

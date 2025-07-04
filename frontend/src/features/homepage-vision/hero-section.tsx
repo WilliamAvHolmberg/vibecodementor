@@ -76,9 +76,6 @@ export function HeroSection() {
               VibeCodeMentor.net
             </span>
           </h1>
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-gray-700 dark:text-gray-300 mb-6 sm:mb-8">
-            The Swedish AI Development Consultancy
-          </h2>
           <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto leading-relaxed mb-6 sm:mb-8">
             We&apos;re building the future of AI-powered development. A place where rapid prototyping meets production-ready solutions, 
             where community meets cutting-edge technology, and where Swedish innovation serves the global market.
@@ -96,7 +93,7 @@ export function HeroSection() {
               className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
             >
               <span>🚀</span>
-              Get Early Access
+              Join us!
             </button>
           </div>
           
