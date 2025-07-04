@@ -13,6 +13,44 @@ function FloatingChatInterface({ onClose, onMinimize }: { onClose: () => void; o
   const { messages, messagesEndRef, currentUsername, isLoadingHistory, sendMessage, isConnected, onlineUsers } = useChatContext();
   const [message, setMessage] = useState('');
 
+  // Auto-scroll to bottom when chat opens and when messages load
+  useEffect(() => {
+    const scrollToBottom = () => {
+      if (messagesEndRef.current) {
+        const chatContainer = messagesEndRef.current.closest('.overflow-y-auto');
+        if (chatContainer) {
+          // Immediate scroll to bottom when opening chat
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+      }
+    };
+
+    // Scroll to bottom immediately when component mounts (chat opens)
+    const timer = setTimeout(scrollToBottom, 100); // Small delay to ensure DOM is ready
+    
+    return () => clearTimeout(timer);
+  }, []); // Empty dependency array = runs once when component mounts
+
+  // Also scroll to bottom when messages change (but only after initial load)
+  useEffect(() => {
+    if (!isLoadingHistory && messages.length > 0) {
+      const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+          const chatContainer = messagesEndRef.current.closest('.overflow-y-auto');
+          if (chatContainer) {
+            chatContainer.scrollTo({
+              top: chatContainer.scrollHeight,
+              behavior: 'smooth'
+            });
+          }
+        }
+      };
+
+      const timer = setTimeout(scrollToBottom, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [messages.length, isLoadingHistory]);
+
   const handleSendMessage = async () => {
     if (message.trim()) {
       await sendMessage(message.trim());
@@ -28,7 +66,7 @@ function FloatingChatInterface({ onClose, onMinimize }: { onClose: () => void; o
   };
 
   return (
-    <div className="fixed bottom-5 right-6 sm:right-24 z-[60] w-80 max-w-[calc(100vw-2rem)] h-96 max-h-[calc(100vh-6rem)] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-800/50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 slide-in-from-right-4 duration-300">
+    <div className="fixed bottom-5 right-6 sm:right-24 z-[60] w-96 max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-6rem)] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-800/50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 slide-in-from-right-4 duration-300">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
         <div className="flex flex-col">
