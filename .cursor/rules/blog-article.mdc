@@ -1,0 +1,183 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+```markdown
+# Blog Writing Guidelines for VibeCodeMentor
+
+## 🎯 Philosophy: Authentic Voice + Professional Polish
+- **Keep the authentic, passionate voice** - don't sanitize the personality
+- **Professional but not corporate** - we're building in public, not selling enterprise
+- **Opinionated content is good** - strong takes generate engagement
+- **Focus on practical insights** - what can readers actually learn/apply?
+
+## 📁 File Structure & Setup
+
+### 1. Create New Blog Post
+```
+frontend/src/app/blog/[slug]/page.tsx
+```
+- Use kebab-case for slugs (e.g., `amazing-time-to-be-alive`)
+- Each blog post is a separate Next.js page (rawdog approach, not generic)
+
+### 2. Metadata Template
+```typescript
+export const metadata: Metadata = {
+  title: '[Blog Title] | VibeCodeMentor',
+  description: 'Compelling 1-2 sentence description under 160 chars',
+  openGraph: {
+    title: '[Blog Title]',
+    description: 'Same as above description',
+    type: 'article',
+    publishedTime: '2024-01-XX', // Use actual date
+    authors: ['William Holmberg'],
+  },
+};
+```
+
+### 3. Component Structure
+```typescript
+export default function [BlogName]BlogPost() {
+  return (
+    <div className="min-h-screen bg-white dark:bg-gray-950">
+      {/* Header Section */}
+      {/* Main Content */}
+    </div>
+  );
+}
+```
+
+## 🎨 Design Standards
+
+### Header Section (Always Include)
+- Back navigation: `← Back to VibeCodeMentor`
+- Date meta (format: "July 4, 2025")
+- Large, clean title (3xl on mobile, 5xl on desktop)
+- Compelling subtitle/description
+- No hero images - keep it text-focused
+
+### Content Styling
+- Use `prose prose-lg dark:prose-invert max-w-none` for article wrapper
+- Consistent heading hierarchy (h2 for main sections)
+- Proper spacing: `mb-6` between paragraphs, `mt-12` before new sections
+- Blockquotes for key quotes/insights
+- Lists for actionable items or key points
+
+### Call-to-Action Footer
+- Always end with engaging CTA section
+- Two buttons: primary (GitHub/template), secondary (homepage)
+- Inspiring closing message with emoji
+
+## 📝 Content Guidelines
+
+### Opening Hook
+- Start with a strong, opinionated statement
+- Make it personal - "I think...", "I've seen..."
+- Set the stage for what you're going to argue/explain
+
+### Structure That Works
+1. **Hook** - grab attention immediately
+2. **Problem/Context** - what's the current situation?
+3. **Your Take** - why is this important/different?
+4. **Evidence/Examples** - back up your claims
+5. **Future Vision** - where is this heading?
+6. **Action Items** - what should readers do?
+
+### Voice & Tone
+- ✅ **Passionate**: "fucking fantastic", "beyond me"
+- ✅ **Confident**: Strong statements, clear positions
+- ✅ **Personal**: Share experiences, use "I"
+- ✅ **Practical**: Focus on what people can actually do
+- ❌ **Corporate speak**: Avoid buzzwords and safe language
+- ❌ **Wishy-washy**: Don't hedge every statement
+
+### Technical Content
+- Explain context for non-technical readers
+- Use concrete examples over abstract concepts
+- Link to relevant tools/resources
+- Balance technical depth with accessibility
+
+## 🧭 Navigation Integration
+
+### Adding to Header Menu
+1. Open `frontend/src/shared/components/app-header.tsx`
+2. Find the Articles dropdown section
+3. Add new link at the TOP (newest first):
+
+```typescript
+<a
+  href="/blog/your-new-slug"
+  className="flex items-center w-full px-3 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 rounded-xl transition-all duration-200 cursor-pointer leading-relaxed block"
+>
+  Your Blog Title
+</a>
+```
+
+4. Adjust dropdown width if needed (`w-72`, `w-80`, etc.)
+
+## 🎯 Content Ideas That Work
+
+### Technical Takes
+- AI/development workflow insights
+- Stack decisions and reasoning
+- Building in public experiences
+- Tool comparisons and opinions
+
+### Industry Commentary
+- Software engineering trends
+- Team dynamics and scaling
+- Developer productivity
+- Future predictions
+
+### Personal Journey
+- Lessons learned from projects
+- Mistakes and recoveries
+- Process improvements
+- Community insights
+
+## ✅ Quality Checklist
+
+### Before Publishing
+- [ ] Metadata properly filled out
+- [ ] Back navigation works
+- [ ] Title is compelling and clear
+- [ ] Content has clear structure with h2 headings
+- [ ] Voice feels authentic and passionate
+- [ ] Includes practical takeaways
+- [ ] CTA section is engaging
+- [ ] Links work and open appropriately
+- [ ] Added to navigation dropdown
+- [ ] Mobile responsive (test on phone)
+
+### Content Review
+- [ ] Does this provide value to readers?
+- [ ] Is the take opinionated enough to be interesting?
+- [ ] Are there concrete examples/evidence?
+- [ ] Does it fit with the VibeCodeMentor brand?
+- [ ] Would I share this with other developers?
+
+## 🚨 Common Mistakes to Avoid
+
+- **Generic titles** - be specific and opinionated
+- **Buried lede** - get to the point quickly
+- **Too much hedging** - commit to your positions
+- **No clear takeaway** - what should readers do?
+- **Corporate tone** - keep it human and passionate
+- **Wall of text** - break up with headings, lists, quotes
+- **Weak endings** - finish strong with clear CTAs
+
+## 🎨 Styling Reference
+
+### Key Classes
+- Article wrapper: `prose prose-lg dark:prose-invert max-w-none`
+- Main heading: `text-2xl font-semibold text-gray-900 dark:text-white mb-6 mt-12`
+- Body text: `text-gray-700 dark:text-gray-300 leading-relaxed mb-6`
+- Blockquote: `border-l-4 border-blue-500 pl-6 italic text-gray-600 dark:text-gray-400 my-8`
+- Lists: `space-y-2` for proper spacing
+
+### Responsive Considerations
+- Test on mobile - long titles should wrap nicely
+- Ensure proper spacing on all screen sizes
+- CTAs should stack on mobile, inline on desktop
+```

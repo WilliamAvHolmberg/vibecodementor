@@ -92,6 +92,9 @@ export function useUsers() {
 - ✅ Wrap generated hooks in feature-specific hooks
 - ✅ Keep it simple - avoid over-engineering
 - ✅ Consistency over cleverness
+- ✅ keep the design clear, do not overuse emojis, make it feel real, and clean
+
+
 
 ## 🚨 Critical Gotchas
 - **Orval regeneration** wipes `api/` folder - never edit directly

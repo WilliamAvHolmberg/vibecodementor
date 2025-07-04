@@ -24,7 +24,7 @@ export function AnalyticsAssistantSection() {
     if (!hasScrolledToChat) {
       setHasScrolledToChat(true);
       setTimeout(() => {
-        const section = document.getElementById('analytics-assistant');
+        const section = document.getElementById('ai-assistant');
         if (section) {
           const offsetTop = section.offsetTop + 200;
           window.scrollTo({
@@ -37,7 +37,7 @@ export function AnalyticsAssistantSection() {
   };
 
   return (
-    <section id="analytics-assistant" className="py-20 px-6 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
+    <section id="ai-assistant" className="py-20 px-6 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">

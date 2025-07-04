@@ -1,19 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/shared/components/ui/button";
 import { useAuth } from "@/features/auth";
-import { User, LogOut, Zap, Menu, ChevronDown, GitBranch, ExternalLink } from "lucide-react";
-
-// Navigation sections with anchor links
-const sections = [
-  { id: 'hero', label: 'Home', href: '/#hero' },
-  { id: 'chat', label: 'Chat', href: '/#chat' },
-  { id: 'analytics', label: 'Analytics', href: '/#analytics' },
-  { id: 'gallery', label: 'Gallery', href: '/#gallery' },
-  { id: 'auth', label: 'Auth', href: '/#auth' },
-  { id: 'digitalocean', label: 'DigitalOcean', href: '/#digitalocean' },
-  { id: 'cta', label: 'Contact', href: '/#cta' },
-];
+import { User, LogOut, Zap, GitBranch } from "lucide-react";
 
 export function AppHeader() {
   const { isAuthenticated, user, logout, isLoading } = useAuth();
@@ -24,7 +14,7 @@ export function AppHeader() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-18 sm:h-20">
             <div className="flex items-center gap-3 sm:gap-8">
-              <a href="/" className="flex items-center gap-3 sm:gap-4 hover:opacity-80 transition-opacity">
+              <Link href="/" className="flex items-center gap-3 sm:gap-4 hover:opacity-80 transition-opacity">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl shadow-purple-500/25">
                   <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
@@ -39,7 +29,7 @@ export function AppHeader() {
                     VCM
                   </h1>
                 </div>
-              </a>
+              </Link>
               <div className="w-20 sm:w-24 h-8 sm:h-10 bg-gray-100/70 dark:bg-gray-800/70 rounded-xl animate-pulse backdrop-blur-sm" />
             </div>
             <div className="w-32 sm:w-40 h-10 sm:h-12 bg-gray-100/70 dark:bg-gray-800/70 rounded-xl animate-pulse backdrop-blur-sm" />
@@ -55,7 +45,7 @@ export function AppHeader() {
         <div className="flex justify-between items-center h-18 sm:h-20">
           {/* Logo & Navigation */}
           <div className="flex items-center gap-3 sm:gap-8 min-w-0">
-            <a href="/" className="group flex items-center gap-3 sm:gap-4 min-w-0 transition-all duration-300 hover:scale-[1.02]">
+            <Link href="/" className="group flex items-center gap-3 sm:gap-4 min-w-0 transition-all duration-300 hover:scale-[1.02]">
               <div className="relative">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl shadow-purple-500/25 group-hover:shadow-2xl group-hover:shadow-purple-500/40 transition-all duration-500 flex-shrink-0">
                   <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover:scale-110 transition-transform duration-300" />
@@ -73,59 +63,24 @@ export function AppHeader() {
                   VCM
                 </h1>
               </div>
-            </a>
+            </Link>
 
-            {/* Navigation Dropdowns */}
-            <div className="flex items-center gap-1 sm:gap-3">
-              {/* Features Dropdown */}
-              <div className="relative group">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="group flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium rounded-xl hover:bg-gray-100/70 dark:hover:bg-gray-800/70 transition-all duration-300 backdrop-blur-sm"
-                >
-                  <span className="hidden sm:block">Features</span>
-                  <ChevronDown className="w-3 h-3 group-hover:rotate-180 transition-transform duration-300" />
-                </Button>
-                <div className="absolute left-0 top-full mt-2 w-52 bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl border border-gray-200/30 dark:border-gray-700/30 shadow-2xl shadow-black/10 dark:shadow-black/30 rounded-2xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                  {sections.map((section) => (
-                    <a
-                      key={section.id}
-                      href={section.href}
-                      className="flex items-center w-full px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 rounded-xl transition-all duration-200 cursor-pointer block"
-                    >
-                      {section.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* Articles Dropdown */}
-              <div className="relative group">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="group flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium rounded-xl hover:bg-gray-100/70 dark:hover:bg-gray-800/70 transition-all duration-300 backdrop-blur-sm"
-                >
-                  <span className="hidden sm:block">Articles</span>
-                  <span className="block sm:hidden">Blog</span>
-                  <ChevronDown className="w-3 h-3 group-hover:rotate-180 transition-transform duration-300" />
-                </Button>
-                <div className="absolute left-0 top-full mt-2 w-72 bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl border border-gray-200/30 dark:border-gray-700/30 shadow-2xl shadow-black/10 dark:shadow-black/30 rounded-2xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                  <a
-                    href="/blog/amazing-time-to-be-alive"
-                    className="flex items-center w-full px-3 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 rounded-xl transition-all duration-200 cursor-pointer leading-relaxed block"
-                  >
-                    It's an amazing time to be alive
-                  </a>
-                  <a
-                    href="/blog/vibecoding-template"
-                    className="flex items-center w-full px-3 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 rounded-xl transition-all duration-200 cursor-pointer leading-relaxed block"
-                  >
-                    I just open-sourced my vibecoding template
-                  </a>
-                </div>
-              </div>
+            {/* Simple Navigation Links */}
+            <div className="flex items-center gap-1 sm:gap-6">
+              <Link
+                href="/features"
+                className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100/70 dark:hover:bg-gray-800/70 rounded-xl transition-all duration-300 backdrop-blur-sm"
+              >
+                <span className="hidden sm:block">Features</span>
+                <span className="block sm:hidden">Demo</span>
+              </Link>
+              
+              <Link
+                href="/blog"
+                className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100/70 dark:hover:bg-gray-800/70 rounded-xl transition-all duration-300 backdrop-blur-sm"
+              >
+                Blog
+              </Link>
             </div>
           </div>
 
@@ -162,13 +117,13 @@ export function AppHeader() {
                   size="sm"
                   className="group relative overflow-hidden"
                 >
-                  <a href="/#newsletter" className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/40 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
+                  <Link href="/#newsletter" className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/40 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
                     <span className="text-sm group-hover:scale-110 transition-transform duration-200">🚀</span>
                     <span className="hidden md:block font-semibold">Join Movement</span>
                     <span className="hidden sm:block md:hidden font-semibold">Join</span>
                     <span className="block sm:hidden font-semibold">✨</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </a>
+                  </Link>
                 </Button>
                 <Button 
                   asChild
@@ -176,7 +131,7 @@ export function AppHeader() {
                   size="sm" 
                   className="group relative overflow-hidden"
                 >
-                  <a 
+                  <Link 
                     href="https://github.com/WilliamAvHolmberg/vibecodementor" 
                     target="_blank" 
                     rel="noopener noreferrer"
@@ -185,9 +140,8 @@ export function AppHeader() {
                     <GitBranch className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                     <span className="font-semibold hidden sm:block">Clone Repo</span>
                     <span className="font-semibold sm:hidden">CLONE</span>
-                    <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
                     <div className="absolute inset-0 bg-gradient-to-r from-gray-100/50 to-transparent dark:from-gray-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </a>
+                  </Link>
                 </Button>
               </div>
             )}

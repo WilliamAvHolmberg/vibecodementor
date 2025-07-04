@@ -1,11 +1,12 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'It\'s an amazing time to be alive | VibeCodeMentor',
-  description: 'AI is creating 10x engineers and enabling smaller teams to achieve more. The future of software development isn\'t about replacing engineers—it\'s about unleashing human potential.',
+  title: 'It&apos;s an amazing time to be alive | VibeCodeMentor',
+  description: 'AI is creating 10x engineers and enabling smaller teams to achieve more. The future of software development isn&apos;t about replacing engineers—it&apos;s about unleashing human potential.',
   openGraph: {
-    title: 'It\'s an amazing time to be alive',
-    description: 'AI is creating 10x engineers and enabling smaller teams to achieve more. The future of software development isn\'t about replacing engineers—it\'s about unleashing human potential.',
+    title: 'It&apos;s an amazing time to be alive',
+    description: 'AI is creating 10x engineers and enabling smaller teams to achieve more. The future of software development isn&apos;t about replacing engineers—it&apos;s about unleashing human potential.',
     type: 'article',
     publishedTime: '2024-01-16',
     authors: ['William Holmberg'],
@@ -21,12 +22,12 @@ export default function AmazingTimeToBeAliveBlogPost() {
           <div className="max-w-4xl mx-auto">
             {/* Back navigation */}
             <div className="mb-8">
-              <a 
+              <Link 
                 href="/" 
                 className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
                 ← Back to VibeCodeMentor
-              </a>
+              </Link>
             </div>
 
             {/* Post Meta */}
@@ -37,12 +38,12 @@ export default function AmazingTimeToBeAliveBlogPost() {
 
             {/* Title */}
             <h1 className="text-3xl md:text-5xl font-light text-gray-900 dark:text-white mb-6 tracking-tight leading-tight">
-              It's an amazing time to be alive
+              It&apos;s an amazing time to be alive
             </h1>
 
             {/* Subtitle */}
             <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-              AI is creating 10x engineers and enabling smaller teams to achieve more. The future of software development isn't about replacing engineers—it's about unleashing human potential.
+              AI is creating 10x engineers and enabling smaller teams to achieve more. The future of software development isn&apos;t about replacing engineers—it&apos;s about unleashing human potential.
             </p>
           </div>
         </section>
@@ -53,7 +54,7 @@ export default function AmazingTimeToBeAliveBlogPost() {
             <article className="prose prose-lg dark:prose-invert max-w-none">
               
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg mb-8">
-                I think we're witnessing something extraordinary. We're seeing the emergence of a new breed of 10x engineers, empowered by AI, and that is <em>fucking fantastic</em>.
+                I think we&apos;re witnessing something extraordinary. We&apos;re seeing the emergence of a new breed of 10x engineers, empowered by AI, and that is <em>fucking fantastic</em>.
               </p>
 
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 mt-12">
@@ -61,11 +62,11 @@ export default function AmazingTimeToBeAliveBlogPost() {
               </h2>
               
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                Organizations are finally going to discover what some of us have known for years: <strong>you don't need 50 engineers working on a simple application</strong>. We've been solving human scaling issues rather than technical issues for so many years now, and it's been holding us back.
+                Organizations are finally going to discover what some of us have known for years: <strong>you don&apos;t need 50 engineers working on a simple application</strong>. We&apos;ve been solving human scaling issues rather than technical issues for so many years now, and it&apos;s been holding us back.
               </p>
 
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                Think about it. Every successful project I've been involved in, we kept it lean—maximum 5 people involved. Everyone took maximum responsibility, really cared about the product. There was ownership, there was pride, there was <em>craftsmanship</em>.
+                Think about it. Every successful project I&apos;ve been involved in, we kept it lean—maximum 5 people involved. Everyone took maximum responsibility, really cared about the product. There was ownership, there was pride, there was <em>craftsmanship</em>.
               </p>
 
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 mt-12">
@@ -73,15 +74,15 @@ export default function AmazingTimeToBeAliveBlogPost() {
               </h2>
               
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                But the industry got trapped in this mindset: "Let's just throw more engineers at the problem." This didn't increase technical complexity—it increased the complexity of having many people involved. And here's the thing: <strong>when there are too many people, people tend to care less</strong>.
+                But the industry got trapped in this mindset: &ldquo;Let&apos;s just throw more engineers at the problem.&rdquo; This didn&apos;t increase technical complexity—it increased the complexity of having many people involved. And here&apos;s the thing: <strong>when there are too many people, people tend to care less</strong>.
               </p>
               
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                It's basic psychology. When responsibility is diffused across dozens of people, individual accountability disappears. The intimate connection between creator and creation gets lost in layers of abstraction, process, and bureaucracy.
+                It&apos;s basic psychology. When responsibility is diffused across dozens of people, individual accountability disappears. The intimate connection between creator and creation gets lost in layers of abstraction, process, and bureaucracy.
               </p>
 
               <blockquote className="border-l-4 border-blue-500 pl-6 italic text-gray-600 dark:text-gray-400 my-8">
-                "The best products come from small teams that give a damn."
+                &ldquo;The best products come from small teams that give a damn.&rdquo;
               </blockquote>
 
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 mt-12">
@@ -101,12 +102,12 @@ export default function AmazingTimeToBeAliveBlogPost() {
               </h2>
               
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                Let's be clear about something: <strong>AI is not going to replace every software engineer</strong>. But let's also be honest: <strong>AI will replace SOME software engineers</strong>. It's not black or white—it's a spectrum.
+                Let&apos;s be clear about something: <strong>AI is not going to replace every software engineer</strong>. But let&apos;s also be honest: <strong>AI will replace SOME software engineers</strong>. It&apos;s not black or white—it&apos;s a spectrum.
               </p>
               
               <ul className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6 space-y-2">
                 <li>• Yes, AI can produce garbage code</li>
-                <li>• Yes, AI will replace engineers who don't adapt</li>
+                <li>• Yes, AI will replace engineers who don&apos;t adapt</li>
                 <li>• Yes, AI amplifies both good and bad practices</li>
                 <li>• But AI also enables incredible creativity and productivity</li>
                 <li>• AI democratizes software development</li>
@@ -114,7 +115,7 @@ export default function AmazingTimeToBeAliveBlogPost() {
               </ul>
 
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                How anyone can waste time debating this instead of going out there and exploring what's possible to do <em>today</em> is beyond me.
+                How anyone can waste time debating this instead of going out there and exploring what&apos;s possible to do <em>today</em> is beyond me.
               </p>
 
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 mt-12">
@@ -122,23 +123,23 @@ export default function AmazingTimeToBeAliveBlogPost() {
               </h2>
               
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                I'm so thrilled to see where we're going. We're entering an era where:
+                I&apos;m so thrilled to see where we&apos;re going. We&apos;re entering an era where:
               </p>
               
               <ul className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6 space-y-2">
                 <li>• Small teams will build products that compete with tech giants</li>
                 <li>• Individual creators will ship faster than entire corporations</li>
                 <li>• The barrier between idea and implementation will continue to shrink</li>
-                <li>• We'll solve actual problems instead of managing human complexity</li>
+                <li>• We&apos;ll solve actual problems instead of managing human complexity</li>
                 <li>• Craftsmanship and ownership will matter more than bureaucracy</li>
               </ul>
 
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                We're witnessing the democratization of software development. Tools that were once available only to well-funded teams are now accessible to anyone with curiosity and determination.
+                We&apos;re witnessing the democratization of software development. Tools that were once available only to well-funded teams are now accessible to anyone with curiosity and determination.
               </p>
 
               <blockquote className="border-l-4 border-green-500 pl-6 italic text-gray-600 dark:text-gray-400 my-8 text-xl font-medium">
-                "It's a fucking beautiful time to be alive!"
+                &ldquo;It&apos;s a fucking beautiful time to be alive!&rdquo;
               </blockquote>
 
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 mt-12">
@@ -146,16 +147,16 @@ export default function AmazingTimeToBeAliveBlogPost() {
               </h2>
               
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                If you're reading this, you have a choice. You can either:
+                If you&apos;re reading this, you have a choice. You can either:
               </p>
               
               <ol className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6 space-y-2">
                 <li><strong>1. Embrace the change</strong> - Learn to work with AI, amplify your capabilities, and become one of those 10x engineers</li>
-                <li><strong>2. Resist and debate</strong> - Spend your energy arguing about what AI can't do while others are busy building the future</li>
+                <li><strong>2. Resist and debate</strong> - Spend your energy arguing about what AI can&apos;t do while others are busy building the future</li>
               </ol>
               
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                The future belongs to those who adapt, experiment, and build. To those who see AI not as a threat, but as the most powerful creative tool we've ever had.
+                The future belongs to those who adapt, experiment, and build. To those who see AI not as a threat, but as the most powerful creative tool we&apos;ve ever had.
               </p>
 
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
@@ -176,12 +177,12 @@ export default function AmazingTimeToBeAliveBlogPost() {
                   >
                     Get the AI-Powered Template
                   </a>
-                  <a 
+                  <Link 
                     href="/" 
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
                   >
                     See AI in Action
-                  </a>
+                  </Link>
                 </div>
                 
                 <p className="text-gray-600 dark:text-gray-400 mt-6">

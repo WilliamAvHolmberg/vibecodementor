@@ -10,7 +10,7 @@ import { Send } from 'lucide-react';
 
 // Chat Interface Component (reuses existing chat logic)
 function FloatingChatInterface({ onClose, onMinimize }: { onClose: () => void; onMinimize: () => void }) {
-  const { messages, messagesEndRef, currentUsername, isLoadingHistory, sendMessage, isConnected } = useChatContext();
+  const { messages, messagesEndRef, currentUsername, isLoadingHistory, sendMessage, isConnected, onlineUsers } = useChatContext();
   const [message, setMessage] = useState('');
 
   const handleSendMessage = async () => {
@@ -31,10 +31,15 @@ function FloatingChatInterface({ onClose, onMinimize }: { onClose: () => void; o
     <div className="fixed bottom-5 right-6 sm:right-24 z-[60] w-80 max-w-[calc(100vw-2rem)] h-96 max-h-[calc(100vh-6rem)] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-800/50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 slide-in-from-right-4 duration-300">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-        <div className="flex items-center gap-2">
-          <MessageCircle className="w-5 h-5" />
-          <span className="font-semibold">Live Chat</span>
-          <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
+        <div className="flex flex-col">
+          <div className="flex items-center gap-2">
+            <MessageCircle className="w-5 h-5" />
+            <span className="font-semibold">Live Chat</span>
+            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
+          </div>
+          <div className="text-xs opacity-80 mt-1">
+            {onlineUsers.length} {onlineUsers.length === 1 ? 'person' : 'people'} online
+          </div>
         </div>
         <div className="flex items-center gap-1">
           <Button

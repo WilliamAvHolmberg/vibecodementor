@@ -55,11 +55,36 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'VibeCodeMentor - AI-Powered Full-Stack Starter',
+    description: 'Production-ready starter for building AI-powered applications with Next.js, .NET 9, and real-time features',
+    url: 'https://vibecodementor.net',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://vibecodementor.net/search?q={search_term_string}'
+      },
+      'query-input': 'required name=search_term_string'
+    },
+    author: {
+      '@type': 'Organization',
+      name: 'VibeCodeMentor',
+      url: 'https://vibecodementor.se'
+    }
+  };
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Providers>
           <AppHeader />
           {children}

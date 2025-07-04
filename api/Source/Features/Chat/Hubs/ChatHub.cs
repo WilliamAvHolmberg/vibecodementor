@@ -49,6 +49,9 @@ public class ChatHub : Hub
             DisconnectedAt = DateTime.UtcNow // UTC timestamp
         });
 
+        // Broadcast updated online users list
+        await BroadcastOnlineUsers();
+
         await base.OnDisconnectedAsync(exception);
     }
 
@@ -76,6 +79,9 @@ public class ChatHub : Hub
             UserName = username,
             ConnectedAt = DateTime.UtcNow // UTC timestamp
         });
+
+        // Broadcast updated online users list
+        await BroadcastOnlineUsers();
     }
 
     /// <summary>
@@ -165,5 +171,17 @@ public class ChatHub : Hub
             UserName = userName,
             Timestamp = DateTime.UtcNow
         });
+    }
+
+    /// <summary>
+    /// Broadcast current online users to all clients
+    /// </summary>
+    private async Task BroadcastOnlineUsers()
+    {
+        var onlineUsernames = ConnectedUsers.Values.ToList();
+        _logger.LogInformation("👥 Broadcasting {Count} online users: {Users}", 
+            onlineUsernames.Count, string.Join(", ", onlineUsernames));
+        
+        await Clients.All.SendAsync("OnlineUsers", onlineUsernames);
     }
 } 

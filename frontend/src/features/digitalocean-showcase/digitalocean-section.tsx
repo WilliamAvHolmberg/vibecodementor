@@ -1,6 +1,6 @@
 'use client';
 
-import { Cloud, Zap, Heart, Brain, Code2, Rocket, Server, Building, Globe, CheckCircle } from 'lucide-react';
+import { Cloud, Zap, Heart, Brain, Rocket, Globe } from 'lucide-react';
 
 export function DigitalOceanSection() {
   const philosophyPoints = [
@@ -48,38 +48,38 @@ export function DigitalOceanSection() {
     }
   ];
 
-  const stackSynergy = [
-    {
-      dotnet: ".NET Background Jobs",
-      digitalocean: "Reliable Droplets",
-      result: "Hangfire + solid infrastructure = worry-free automation"
-    },
-    {
-      dotnet: "SignalR Real-time",
-      digitalocean: "DO Networking",
-      result: "WebSockets that just work, globally"
-    },
-    {
-      dotnet: "EF Migrations",
-      digitalocean: "Managed PostgreSQL",
-      result: "Database evolution without the ops overhead"
-    }
-  ];
+  // const stackSynergy = [
+  //   {
+  //     dotnet: ".NET Background Jobs",
+  //     digitalocean: "Reliable Droplets",
+  //     result: "Hangfire + solid infrastructure = worry-free automation"
+  //   },
+  //   {
+  //     dotnet: "SignalR Real-time",
+  //     digitalocean: "DO Networking",
+  //     result: "WebSockets that just work, globally"
+  //   },
+  //   {
+  //     dotnet: "EF Migrations",
+  //     digitalocean: "Managed PostgreSQL",
+  //     result: "Database evolution without the ops overhead"
+  //   }
+  // ];
 
-  const alternatives = [
-    {
-      scenario: "Enterprise with complex compliance",
-      suggestion: "AWS might offer more specialized tools"
-    },
-    {
-      scenario: "Serverless-first architecture",
-      suggestion: "Vercel/Netlify could be simpler"
-    },
-    {
-      scenario: "Massive scale from day one",
-      suggestion: "Google Cloud has powerful auto-scaling"
-    }
-  ];
+  // const alternatives = [
+  //   {
+  //     scenario: "Enterprise with complex compliance",
+  //     suggestion: "AWS might offer more specialized tools"
+  //   },
+  //   {
+  //     scenario: "Serverless-first architecture",
+  //     suggestion: "Vercel/Netlify could be simpler"
+  //   },
+  //   {
+  //     scenario: "Massive scale from day one",
+  //     suggestion: "Google Cloud has powerful auto-scaling"
+  //   }
+  // ];
 
   return (
     <section id="digitalocean" className="py-16 px-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900/50 dark:to-blue-900/20">
