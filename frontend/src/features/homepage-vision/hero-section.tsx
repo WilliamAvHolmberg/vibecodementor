@@ -55,10 +55,15 @@ export function HeroSection() {
               <ArrowRight className="w-5 h-5" />
             </a>
             
-            <button className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 text-lg">
+            <a
+              href="https://github.com/WilliamAvHolmberg/vibecodementor"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 text-lg"
+            >
               <Github className="w-5 h-5" />
               Clone & Start Building
-            </button>
+            </a>
           </div>
           
           <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">

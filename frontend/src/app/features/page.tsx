@@ -104,12 +104,17 @@ export default function FeaturesPage() {
                 <h3 className="font-semibold text-gray-900 dark:text-white">Ready to Build?</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Clone this entire repository and start building immediately</p>
               </div>
-              <button className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105">
+              <a
+                href="https://github.com/WilliamAvHolmberg/vibecodementor"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+              >
                 <span className="flex items-center gap-2">
                   <Code className="w-4 h-4" />
                   Clone & Start
                 </span>
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -386,10 +391,15 @@ export default function FeaturesPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105">
+            <a
+              href="https://github.com/WilliamAvHolmberg/vibecodementor"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+            >
               <Github className="w-5 h-5" />
               Clone Repository
-            </button>
+            </a>
           </div>
 
           <div className="mt-6">
