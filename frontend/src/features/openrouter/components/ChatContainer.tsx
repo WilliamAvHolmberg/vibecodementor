@@ -53,13 +53,14 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       sendMessage(`Get me the latest data for device ${deviceId}`);
     }
   }, [deviceId, messages.length, isOpen, sendMessage]);
-
+  
   // Send initial message when provided
   useEffect(() => {
     if (initialMessage && isOpen && messages.length === 0) {
       sendMessage(initialMessage);
       onInitialMessageSent?.();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialMessage, isOpen, messages.length, sendMessage, onInitialMessageSent]);
 
   // Always auto-scroll the messages container to show latest content

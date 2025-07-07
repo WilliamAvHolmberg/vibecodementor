@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Source.Infrastructure;
 using Source.Infrastructure.Extensions;
 using Source.Features.Chat.Hubs;
+using Source.Features.Kanban.Hubs;
 using api.Source.Infrastructure.Services.BackgroundJobs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,6 +58,7 @@ app.MapControllers();
 // Map SignalR hubs
 app.MapHub<ChatHub>("/hubs/chat");
 app.MapHub<MetricsHub>("/hubs/metrics");
+app.MapHub<KanbanHub>("/hubs/kanban");
 
 // Health check endpoint
 app.MapGet("/", () => "Hello World! API is running 🚀");

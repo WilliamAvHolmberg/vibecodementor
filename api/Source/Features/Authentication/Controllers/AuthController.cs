@@ -89,11 +89,11 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Verify OTP code and get JWT token
+    /// Verify OTP code and set authentication cookie
     /// </summary>
     [HttpPost("verify-otp")]
     [EnableRateLimiting("AuthPolicy")]  // 🚨 Rate limited: 5 per minute
-    [ProducesResponseType<VerifyOtpResponse>(200)]
+    [ProducesResponseType<VerifyOtpCookieResponse>(200)]
     [ProducesResponseType(400)]
     public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequest request)
     {
@@ -102,8 +102,23 @@ public class AuthController : ControllerBase
 
         if (result.IsSuccess)
         {
-            _logger.LogInformation("OTP verified successfully for: {Email}", request.Email);
-            return Ok(result.Value);
+            // Set HTTP-only authentication cookie
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Use HTTPS in production
+                SameSite = SameSiteMode.Lax,
+                Expires = result.Value.ExpiresAt,
+                Path = "/"
+            };
+
+            Response.Cookies.Append("auth-token", result.Value.Token, cookieOptions);
+
+            _logger.LogInformation("OTP verified and auth cookie set for: {Email}", request.Email);
+
+            // Return success without exposing the token
+            var response = new VerifyOtpCookieResponse("Authentication successful", result.Value.Email);
+            return Ok(response);
         }
 
         _logger.LogWarning("OTP verification failed for {Email}: {Error}", request.Email, result.Error);
@@ -130,6 +145,26 @@ public class AuthController : ControllerBase
 
         _logger.LogWarning("Failed to get current user: {Error}", result.Error);
         return BadRequest(new { error = result.Error });
+    }
+
+    /// <summary>
+    /// Logout user by clearing authentication cookie
+    /// </summary>
+    [HttpPost("logout")]
+    [ProducesResponseType(200)]
+    public IActionResult Logout()
+    {
+        // Clear the authentication cookie
+        Response.Cookies.Delete("auth-token", new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Lax,
+            Path = "/"
+        });
+
+        _logger.LogInformation("User logged out - auth cookie cleared");
+        return Ok(new { message = "Logged out successfully" });
     }
 }
 
@@ -162,4 +197,9 @@ public record SendOtpRequest(
 public record VerifyOtpRequest(
     [Required] [EmailAddress] string Email,
     [Required] [StringLength(6, MinimumLength = 6, ErrorMessage = "OTP must be exactly 6 digits")] string OtpCode
-); 
+);
+
+/// <summary>
+/// Response for OTP verification with cookie
+/// </summary>
+public record VerifyOtpCookieResponse(string Message, string Email); 

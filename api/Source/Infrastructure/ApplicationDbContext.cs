@@ -5,6 +5,7 @@ using Source.Features.Chat.Models;
 using Source.Features.Analytics.Models;
 using Source.Features.Files.Models;
 using Source.Features.Newsletter.Models;
+using Source.Features.Kanban.Models;
 using api.Source.Infrastructure.Services.BackgroundJobs;
 
 namespace Source.Infrastructure;
@@ -17,6 +18,11 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<DailyVisitStats> DailyVisitStats { get; set; }
     public DbSet<UploadedImage> UploadedImages { get; set; }
     public DbSet<NewsletterSubscription> NewsletterSubscriptions { get; set; }
+    
+    // Kanban entities
+    public DbSet<KanbanBoard> KanbanBoards { get; set; }
+    public DbSet<KanbanColumn> KanbanColumns { get; set; }
+    public DbSet<KanbanTask> KanbanTasks { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -107,6 +113,64 @@ public class ApplicationDbContext : IdentityDbContext<User>
                 
             entity.Property(e => e.UnsubscribedAt)
                 .HasColumnType("timestamp with time zone");
+        });
+
+        // Configure Kanban entities
+        builder.Entity<KanbanBoard>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.UserId).HasDatabaseName("IX_KanbanBoards_UserId");
+            entity.HasIndex(e => new { e.UserId, e.IsActive, e.UpdatedAt }).HasDatabaseName("IX_KanbanBoards_UserId_IsActive_UpdatedAt");
+            
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+                
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+        });
+
+        builder.Entity<KanbanColumn>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.BoardId).HasDatabaseName("IX_KanbanColumns_BoardId");
+            entity.HasIndex(e => new { e.BoardId, e.Order }).HasDatabaseName("IX_KanbanColumns_BoardId_Order");
+            
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
+            entity.HasOne(e => e.Board)
+                .WithMany(e => e.Columns)
+                .HasForeignKey(e => e.BoardId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<KanbanTask>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.BoardId).HasDatabaseName("IX_KanbanTasks_BoardId");
+            entity.HasIndex(e => e.ColumnId).HasDatabaseName("IX_KanbanTasks_ColumnId");
+            entity.HasIndex(e => new { e.ColumnId, e.Position }).HasDatabaseName("IX_KanbanTasks_ColumnId_Position");
+            
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+                
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
+            entity.HasOne(e => e.Board)
+                .WithMany(e => e.Tasks)
+                .HasForeignKey(e => e.BoardId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Column)
+                .WithMany(e => e.Tasks)
+                .HasForeignKey(e => e.ColumnId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 } 

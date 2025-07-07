@@ -25,15 +25,26 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AddSubtaskRequestDTO,
+  AddSubtaskResponseDTO,
   ChatMessageDtoDTO,
+  CreateBoardRequestDTO,
+  CreateBoardResponseDTO,
+  CreateTaskRequestDTO,
+  CreateTaskResponseDTO,
   CreateUserRequestDTO,
   CurrentUserResponseDTO,
   GetApiChatMessagesParams,
   GetApiFilesImagesLatestParams,
+  GetApiKanbanChatStreamParams,
   GetApiOpenrouterToolsChatStreamParams,
   GetApiUsersParams,
+  KanbanBoardDtoDTO,
+  KanbanBoardSummaryDtoDTO,
   LoginRequestDTO,
   LoginUserResponseDTO,
+  MoveTaskRequestDTO,
+  MoveTaskResponseDTO,
   PostApiFilesUploadBody,
   PostApiFilesUploadImageBody,
   ProblemDetailsDTO,
@@ -44,9 +55,10 @@ import type {
   SendOtpRequestDTO,
   SendOtpResponseDTO,
   SubscribeToNewsletterRequestDTO,
+  ToggleSubtaskResponseDTO,
   UpdateUserRequestDTO,
-  VerifyOtpRequestDTO,
-  VerifyOtpResponseDTO
+  VerifyOtpCookieResponseDTO,
+  VerifyOtpRequestDTO
 } from '../models';
 
 import { customApiClient } from '../client';
@@ -379,7 +391,7 @@ export const postApiAuthVerifyOtp = (
 ) => {
       
       
-      return customApiClient<VerifyOtpResponseDTO>(
+      return customApiClient<VerifyOtpCookieResponseDTO>(
       {url: `/api/Auth/verify-otp`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: verifyOtpRequestDTO, signal
@@ -514,6 +526,63 @@ export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>
 
 
 
+export const postApiAuthLogout = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<void>(
+      {url: `/api/Auth/logout`, method: 'POST', signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiAuthLogoutMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogout>>, TError,void, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogout>>, TError,void, TContext> => {
+
+const mutationKey = ['postApiAuthLogout'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthLogout>>, void> = () => {
+          
+
+          return  postApiAuthLogout()
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiAuthLogoutMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAuthLogout>>>
+    
+    export type PostApiAuthLogoutMutationError = ErrorType<unknown>
+
+    export const usePostApiAuthLogout = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogout>>, TError,void, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiAuthLogout>>,
+        TError,
+        void,
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiAuthLogoutMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
 export const getApiChatMessages = (
     params?: GetApiChatMessagesParams,
  signal?: AbortSignal
@@ -970,6 +1039,689 @@ export function useGetApiFilesInfoFilePath<TData = Awaited<ReturnType<typeof get
 
 
 
+export const getApiKanbanBoards = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<KanbanBoardSummaryDtoDTO[]>(
+      {url: `/api/Kanban/boards`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetApiKanbanBoardsQueryKey = () => {
+    return [`/api/Kanban/boards`] as const;
+    }
+
+    
+export const getGetApiKanbanBoardsQueryOptions = <TData = Awaited<ReturnType<typeof getApiKanbanBoards>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoards>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiKanbanBoardsQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiKanbanBoards>>> = ({ signal }) => getApiKanbanBoards(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoards>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiKanbanBoardsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiKanbanBoards>>>
+export type GetApiKanbanBoardsQueryError = ErrorType<unknown>
+
+
+export function useGetApiKanbanBoards<TData = Awaited<ReturnType<typeof getApiKanbanBoards>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoards>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiKanbanBoards>>,
+          TError,
+          Awaited<ReturnType<typeof getApiKanbanBoards>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiKanbanBoards<TData = Awaited<ReturnType<typeof getApiKanbanBoards>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoards>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiKanbanBoards>>,
+          TError,
+          Awaited<ReturnType<typeof getApiKanbanBoards>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiKanbanBoards<TData = Awaited<ReturnType<typeof getApiKanbanBoards>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoards>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiKanbanBoards<TData = Awaited<ReturnType<typeof getApiKanbanBoards>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoards>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiKanbanBoardsQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const postApiKanbanBoards = (
+    createBoardRequestDTO: CreateBoardRequestDTO,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<CreateBoardResponseDTO>(
+      {url: `/api/Kanban/boards`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createBoardRequestDTO, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiKanbanBoardsMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiKanbanBoards>>, TError,{data: CreateBoardRequestDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiKanbanBoards>>, TError,{data: CreateBoardRequestDTO}, TContext> => {
+
+const mutationKey = ['postApiKanbanBoards'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiKanbanBoards>>, {data: CreateBoardRequestDTO}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiKanbanBoards(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiKanbanBoardsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiKanbanBoards>>>
+    export type PostApiKanbanBoardsMutationBody = CreateBoardRequestDTO
+    export type PostApiKanbanBoardsMutationError = ErrorType<unknown>
+
+    export const usePostApiKanbanBoards = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiKanbanBoards>>, TError,{data: CreateBoardRequestDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiKanbanBoards>>,
+        TError,
+        {data: CreateBoardRequestDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiKanbanBoardsMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const getApiKanbanBoardsBoardId = (
+    boardId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<KanbanBoardDtoDTO>(
+      {url: `/api/Kanban/boards/${boardId}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetApiKanbanBoardsBoardIdQueryKey = (boardId: string,) => {
+    return [`/api/Kanban/boards/${boardId}`] as const;
+    }
+
+    
+export const getGetApiKanbanBoardsBoardIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError = ErrorType<unknown>>(boardId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiKanbanBoardsBoardIdQueryKey(boardId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>> = ({ signal }) => getApiKanbanBoardsBoardId(boardId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(boardId),  staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiKanbanBoardsBoardIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>>
+export type GetApiKanbanBoardsBoardIdQueryError = ErrorType<unknown>
+
+
+export function useGetApiKanbanBoardsBoardId<TData = Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError = ErrorType<unknown>>(
+ boardId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiKanbanBoardsBoardId<TData = Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError = ErrorType<unknown>>(
+ boardId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiKanbanBoardsBoardId<TData = Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError = ErrorType<unknown>>(
+ boardId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiKanbanBoardsBoardId<TData = Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError = ErrorType<unknown>>(
+ boardId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanBoardsBoardId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiKanbanBoardsBoardIdQueryOptions(boardId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const postApiKanbanBoardsBoardIdTasks = (
+    boardId: string,
+    createTaskRequestDTO: CreateTaskRequestDTO,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<CreateTaskResponseDTO>(
+      {url: `/api/Kanban/boards/${boardId}/tasks`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createTaskRequestDTO, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiKanbanBoardsBoardIdTasksMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasks>>, TError,{boardId: string;data: CreateTaskRequestDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasks>>, TError,{boardId: string;data: CreateTaskRequestDTO}, TContext> => {
+
+const mutationKey = ['postApiKanbanBoardsBoardIdTasks'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasks>>, {boardId: string;data: CreateTaskRequestDTO}> = (props) => {
+          const {boardId,data} = props ?? {};
+
+          return  postApiKanbanBoardsBoardIdTasks(boardId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiKanbanBoardsBoardIdTasksMutationResult = NonNullable<Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasks>>>
+    export type PostApiKanbanBoardsBoardIdTasksMutationBody = CreateTaskRequestDTO
+    export type PostApiKanbanBoardsBoardIdTasksMutationError = ErrorType<unknown>
+
+    export const usePostApiKanbanBoardsBoardIdTasks = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasks>>, TError,{boardId: string;data: CreateTaskRequestDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasks>>,
+        TError,
+        {boardId: string;data: CreateTaskRequestDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiKanbanBoardsBoardIdTasksMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const putApiKanbanBoardsBoardIdTasksTaskIdMove = (
+    boardId: string,
+    taskId: string,
+    moveTaskRequestDTO: MoveTaskRequestDTO,
+ ) => {
+      
+      
+      return customApiClient<MoveTaskResponseDTO>(
+      {url: `/api/Kanban/boards/${boardId}/tasks/${taskId}/move`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: moveTaskRequestDTO
+    },
+      );
+    }
+  
+
+
+export const getPutApiKanbanBoardsBoardIdTasksTaskIdMoveMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdMove>>, TError,{boardId: string;taskId: string;data: MoveTaskRequestDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdMove>>, TError,{boardId: string;taskId: string;data: MoveTaskRequestDTO}, TContext> => {
+
+const mutationKey = ['putApiKanbanBoardsBoardIdTasksTaskIdMove'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdMove>>, {boardId: string;taskId: string;data: MoveTaskRequestDTO}> = (props) => {
+          const {boardId,taskId,data} = props ?? {};
+
+          return  putApiKanbanBoardsBoardIdTasksTaskIdMove(boardId,taskId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiKanbanBoardsBoardIdTasksTaskIdMoveMutationResult = NonNullable<Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdMove>>>
+    export type PutApiKanbanBoardsBoardIdTasksTaskIdMoveMutationBody = MoveTaskRequestDTO
+    export type PutApiKanbanBoardsBoardIdTasksTaskIdMoveMutationError = ErrorType<unknown>
+
+    export const usePutApiKanbanBoardsBoardIdTasksTaskIdMove = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdMove>>, TError,{boardId: string;taskId: string;data: MoveTaskRequestDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdMove>>,
+        TError,
+        {boardId: string;taskId: string;data: MoveTaskRequestDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiKanbanBoardsBoardIdTasksTaskIdMoveMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const postApiKanbanBoardsBoardIdTasksTaskIdSubtasks = (
+    boardId: string,
+    taskId: string,
+    addSubtaskRequestDTO: AddSubtaskRequestDTO,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<AddSubtaskResponseDTO>(
+      {url: `/api/Kanban/boards/${boardId}/tasks/${taskId}/subtasks`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: addSubtaskRequestDTO, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiKanbanBoardsBoardIdTasksTaskIdSubtasksMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasksTaskIdSubtasks>>, TError,{boardId: string;taskId: string;data: AddSubtaskRequestDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasksTaskIdSubtasks>>, TError,{boardId: string;taskId: string;data: AddSubtaskRequestDTO}, TContext> => {
+
+const mutationKey = ['postApiKanbanBoardsBoardIdTasksTaskIdSubtasks'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasksTaskIdSubtasks>>, {boardId: string;taskId: string;data: AddSubtaskRequestDTO}> = (props) => {
+          const {boardId,taskId,data} = props ?? {};
+
+          return  postApiKanbanBoardsBoardIdTasksTaskIdSubtasks(boardId,taskId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiKanbanBoardsBoardIdTasksTaskIdSubtasksMutationResult = NonNullable<Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasksTaskIdSubtasks>>>
+    export type PostApiKanbanBoardsBoardIdTasksTaskIdSubtasksMutationBody = AddSubtaskRequestDTO
+    export type PostApiKanbanBoardsBoardIdTasksTaskIdSubtasksMutationError = ErrorType<unknown>
+
+    export const usePostApiKanbanBoardsBoardIdTasksTaskIdSubtasks = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasksTaskIdSubtasks>>, TError,{boardId: string;taskId: string;data: AddSubtaskRequestDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiKanbanBoardsBoardIdTasksTaskIdSubtasks>>,
+        TError,
+        {boardId: string;taskId: string;data: AddSubtaskRequestDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiKanbanBoardsBoardIdTasksTaskIdSubtasksMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const putApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggle = (
+    boardId: string,
+    taskId: string,
+    subtaskIndex: number,
+ ) => {
+      
+      
+      return customApiClient<ToggleSubtaskResponseDTO>(
+      {url: `/api/Kanban/boards/${boardId}/tasks/${taskId}/subtasks/${subtaskIndex}/toggle`, method: 'PUT'
+    },
+      );
+    }
+  
+
+
+export const getPutApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggleMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggle>>, TError,{boardId: string;taskId: string;subtaskIndex: number}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggle>>, TError,{boardId: string;taskId: string;subtaskIndex: number}, TContext> => {
+
+const mutationKey = ['putApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggle'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggle>>, {boardId: string;taskId: string;subtaskIndex: number}> = (props) => {
+          const {boardId,taskId,subtaskIndex} = props ?? {};
+
+          return  putApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggle(boardId,taskId,subtaskIndex,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggleMutationResult = NonNullable<Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggle>>>
+    
+    export type PutApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggleMutationError = ErrorType<unknown>
+
+    export const usePutApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggle = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggle>>, TError,{boardId: string;taskId: string;subtaskIndex: number}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggle>>,
+        TError,
+        {boardId: string;taskId: string;subtaskIndex: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiKanbanBoardsBoardIdTasksTaskIdSubtasksSubtaskIndexToggleMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const getApiKanbanChatStream = (
+    params?: GetApiKanbanChatStreamParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<void>(
+      {url: `/api/kanban/chat/stream`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+export const getGetApiKanbanChatStreamQueryKey = (params?: GetApiKanbanChatStreamParams,) => {
+    return [`/api/kanban/chat/stream`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetApiKanbanChatStreamQueryOptions = <TData = Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError = ErrorType<unknown>>(params?: GetApiKanbanChatStreamParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiKanbanChatStreamQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiKanbanChatStream>>> = ({ signal }) => getApiKanbanChatStream(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiKanbanChatStreamQueryResult = NonNullable<Awaited<ReturnType<typeof getApiKanbanChatStream>>>
+export type GetApiKanbanChatStreamQueryError = ErrorType<unknown>
+
+
+export function useGetApiKanbanChatStream<TData = Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError = ErrorType<unknown>>(
+ params: undefined |  GetApiKanbanChatStreamParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiKanbanChatStream>>,
+          TError,
+          Awaited<ReturnType<typeof getApiKanbanChatStream>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiKanbanChatStream<TData = Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError = ErrorType<unknown>>(
+ params?: GetApiKanbanChatStreamParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiKanbanChatStream>>,
+          TError,
+          Awaited<ReturnType<typeof getApiKanbanChatStream>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiKanbanChatStream<TData = Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError = ErrorType<unknown>>(
+ params?: GetApiKanbanChatStreamParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiKanbanChatStream<TData = Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError = ErrorType<unknown>>(
+ params?: GetApiKanbanChatStreamParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatStream>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiKanbanChatStreamQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getApiKanbanChatConversationsConversationId = (
+    conversationId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<void>(
+      {url: `/api/kanban/chat/conversations/${conversationId}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetApiKanbanChatConversationsConversationIdQueryKey = (conversationId: string,) => {
+    return [`/api/kanban/chat/conversations/${conversationId}`] as const;
+    }
+
+    
+export const getGetApiKanbanChatConversationsConversationIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError = ErrorType<unknown>>(conversationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiKanbanChatConversationsConversationIdQueryKey(conversationId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>> = ({ signal }) => getApiKanbanChatConversationsConversationId(conversationId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(conversationId),  staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiKanbanChatConversationsConversationIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>>
+export type GetApiKanbanChatConversationsConversationIdQueryError = ErrorType<unknown>
+
+
+export function useGetApiKanbanChatConversationsConversationId<TData = Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError = ErrorType<unknown>>(
+ conversationId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiKanbanChatConversationsConversationId<TData = Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError = ErrorType<unknown>>(
+ conversationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiKanbanChatConversationsConversationId<TData = Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError = ErrorType<unknown>>(
+ conversationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiKanbanChatConversationsConversationId<TData = Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError = ErrorType<unknown>>(
+ conversationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiKanbanChatConversationsConversationId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiKanbanChatConversationsConversationIdQueryOptions(conversationId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const deleteApiKanbanChatConversationsConversationId = (
+    conversationId: string,
+ ) => {
+      
+      
+      return customApiClient<void>(
+      {url: `/api/kanban/chat/conversations/${conversationId}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteApiKanbanChatConversationsConversationIdMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiKanbanChatConversationsConversationId>>, TError,{conversationId: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiKanbanChatConversationsConversationId>>, TError,{conversationId: string}, TContext> => {
+
+const mutationKey = ['deleteApiKanbanChatConversationsConversationId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiKanbanChatConversationsConversationId>>, {conversationId: string}> = (props) => {
+          const {conversationId} = props ?? {};
+
+          return  deleteApiKanbanChatConversationsConversationId(conversationId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteApiKanbanChatConversationsConversationIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiKanbanChatConversationsConversationId>>>
+    
+    export type DeleteApiKanbanChatConversationsConversationIdMutationError = ErrorType<unknown>
+
+    export const useDeleteApiKanbanChatConversationsConversationId = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiKanbanChatConversationsConversationId>>, TError,{conversationId: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteApiKanbanChatConversationsConversationId>>,
+        TError,
+        {conversationId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteApiKanbanChatConversationsConversationIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
 export const postApiNewsletterSubscribe = (
     subscribeToNewsletterRequestDTO: SubscribeToNewsletterRequestDTO,
  signal?: AbortSignal

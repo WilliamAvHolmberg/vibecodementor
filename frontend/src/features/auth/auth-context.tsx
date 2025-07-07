@@ -1,16 +1,17 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { usePostApiAuthSendOtp, usePostApiAuthVerifyOtp } from '@/api/hooks/api';
+import { usePostApiAuthSendOtp, usePostApiAuthVerifyOtp, useGetApiAuthMe } from '@/api/hooks/api';
+import { useQueryClient } from '@tanstack/react-query';
 import type { 
   SendOtpRequestDTO, 
   VerifyOtpRequestDTO 
 } from '@/api/models';
 
 export interface User {
+  userId: string;
   email: string;
-  token: string;
-  expiresAt: string;
+  isAuthenticated: boolean;
 }
 
 export interface AuthState {
@@ -36,23 +37,21 @@ export interface AuthActions {
   logout: () => void;
   clearError: () => void;
   
-  // State checks
-  isTokenExpired: () => boolean;
+  // Manual refresh of auth state
+  refetchAuth: () => void;
 }
 
 export type AuthContextType = AuthState & AuthActions;
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Storage keys
-const TOKEN_KEY = 'rapid-dev-auth-token';
-const USER_KEY = 'rapid-dev-auth-user';
-
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const queryClient = useQueryClient();
+  
   const [state, setState] = useState<AuthState>({
     user: null,
     isAuthenticated: false,
@@ -62,63 +61,66 @@ export function AuthProvider({ children }: AuthProviderProps) {
     error: null,
   });
 
+  // Use the /me endpoint to check authentication status
+  const {
+    data: meData,
+    isLoading: meLoading,
+    error: meError,
+    refetch: refetchMe
+  } = useGetApiAuthMe({
+    query: {
+      retry: false, // Don't retry on 401
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+    }
+  });
+
   // API mutations
   const sendOtpMutation = usePostApiAuthSendOtp();
   const verifyOtpMutation = usePostApiAuthVerifyOtp();
 
-  // Initialize auth state from localStorage
+  // Update auth state based on /me endpoint response
   useEffect(() => {
-    const initAuth = () => {
-      try {
-        const savedUser = localStorage.getItem(USER_KEY);
-        if (savedUser) {
-          const user: User = JSON.parse(savedUser);
-          
-          // Check if token is expired
-          const expiresAt = new Date(user.expiresAt);
-          const now = new Date();
-          
-          if (expiresAt > now) {
-            setState(prev => ({
-              ...prev,
-              user,
-              isAuthenticated: true,
-              isLoading: false,
-            }));
-            return;
-          } else {
-            // Token expired, clear storage
-            localStorage.removeItem(USER_KEY);
-            localStorage.removeItem(TOKEN_KEY);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to initialize auth:', error);
-        // Clear corrupted data
-        localStorage.removeItem(USER_KEY);
-        localStorage.removeItem(TOKEN_KEY);
-      }
-      
+    if (meLoading) {
+      setState(prev => ({ ...prev, isLoading: true }));
+      return;
+    }
+
+    if (meError) {
+      // 401 or other auth errors - user is not authenticated
       setState(prev => ({
         ...prev,
+        user: null,
+        isAuthenticated: false,
         isLoading: false,
       }));
-    };
+      return;
+    }
 
-    initAuth();
-  }, []);
+    if (meData && meData.isAuthenticated && meData.userId && meData.email) {
+      // User is authenticated
+      const user: User = {
+        userId: meData.userId,
+        email: meData.email,
+        isAuthenticated: meData.isAuthenticated,
+      };
 
-  // Save user to storage when authenticated
-  const saveUserToStorage = (user: User) => {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-    localStorage.setItem(TOKEN_KEY, user.token);
-  };
-
-  // Clear user from storage
-  const clearUserFromStorage = () => {
-    localStorage.removeItem(USER_KEY);
-    localStorage.removeItem(TOKEN_KEY);
-  };
+      setState(prev => ({
+        ...prev,
+        user,
+        isAuthenticated: true,
+        isLoading: false,
+      }));
+    } else {
+      // Response received but user not authenticated
+      setState(prev => ({
+        ...prev,
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+      }));
+    }
+  }, [meData, meLoading, meError]);
 
   // Send OTP to email
   const sendOtp = async (email: string): Promise<boolean> => {
@@ -157,29 +159,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     
     try {
       const request: VerifyOtpRequestDTO = { email, otpCode };
-      const response = await verifyOtpMutation.mutateAsync({ data: request });
+      await verifyOtpMutation.mutateAsync({ data: request });
       
-      if (response.token && response.email && response.expiresAt) {
-        const user: User = {
-          email: response.email,
-          token: response.token,
-          expiresAt: response.expiresAt,
-        };
-        
-        saveUserToStorage(user);
-        
-        setState(prev => ({
-          ...prev,
-          user,
-          isAuthenticated: true,
-          otpStep: 'idle',
-          otpEmail: null,
-        }));
-        
-        return true;
-      } else {
-        throw new Error('Invalid response from server');
-      }
+      // After successful verification, the server should have set the auth cookie
+      // Refetch the /me endpoint to get updated user info
+      await refetchMe();
+      
+      setState(prev => ({
+        ...prev,
+        otpStep: 'idle',
+        otpEmail: null,
+      }));
+      
+      return true;
     } catch (error: unknown) {
       const errorMessage = error && typeof error === 'object' && 'response' in error && 
         error.response && typeof error.response === 'object' && 'data' in error.response &&
@@ -198,7 +190,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Logout user
   const logout = () => {
-    clearUserFromStorage();
+    // Clear React Query cache
+    queryClient.clear();
+    
+    // Reset state
     setState(prev => ({
       ...prev,
       user: null,
@@ -207,6 +202,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
       otpEmail: null,
       error: null,
     }));
+
+    // Note: Server cookies will expire naturally or we could add a logout endpoint
+    // For now, clearing the cache and state is sufficient
+    
+    // Optionally call a logout endpoint here:
+    // try {
+    //   await fetch('/api/auth/logout', { method: 'POST' });
+    // } catch (error) {
+    //   console.error('Logout error:', error);
+    // }
   };
 
   // Clear error message
@@ -214,22 +219,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setState(prev => ({ ...prev, error: null }));
   };
 
-  // Check if token is expired
-  const isTokenExpired = (): boolean => {
-    if (!state.user) return true;
-    
-    const expiresAt = new Date(state.user.expiresAt);
-    const now = new Date();
-    return expiresAt <= now;
+  // Manual refresh of auth state
+  const refetchAuth = () => {
+    refetchMe();
   };
-
-  // Auto-logout on token expiry
-  useEffect(() => {
-    if (state.user && isTokenExpired()) {
-      logout();
-    }
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, [state.user]);
 
   const contextValue: AuthContextType = {
     // State
@@ -240,7 +233,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     verifyOtp,
     logout,
     clearError,
-    isTokenExpired,
+    refetchAuth,
   };
 
   return (

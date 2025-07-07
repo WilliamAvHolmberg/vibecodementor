@@ -7,7 +7,7 @@
     "Key": "development-secret-key-32-characters-minimum-length",
     "Issuer": "api-dev",
     "Audience": "api-dev",
-    "ExpiryMinutes": 1440
+    "ExpiryMinutes": 43200
   },
   "FileStorage": {
     "Provider": "Local",

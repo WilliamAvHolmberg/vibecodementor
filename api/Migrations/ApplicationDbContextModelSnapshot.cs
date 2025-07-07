@@ -341,6 +341,139 @@ namespace api.Migrations
                     b.ToTable("UploadedImages");
                 });
 
+            modelBuilder.Entity("Source.Features.Kanban.Models.KanbanBoard", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_KanbanBoards_UserId");
+
+                    b.HasIndex("UserId", "IsActive", "UpdatedAt")
+                        .HasDatabaseName("IX_KanbanBoards_UserId_IsActive_UpdatedAt");
+
+                    b.ToTable("KanbanBoards");
+                });
+
+            modelBuilder.Entity("Source.Features.Kanban.Models.KanbanColumn", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BoardId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BoardId")
+                        .HasDatabaseName("IX_KanbanColumns_BoardId");
+
+                    b.HasIndex("BoardId", "Order")
+                        .HasDatabaseName("IX_KanbanColumns_BoardId_Order");
+
+                    b.ToTable("KanbanColumns");
+                });
+
+            modelBuilder.Entity("Source.Features.Kanban.Models.KanbanTask", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BoardId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ColumnId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SubtasksJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BoardId")
+                        .HasDatabaseName("IX_KanbanTasks_BoardId");
+
+                    b.HasIndex("ColumnId")
+                        .HasDatabaseName("IX_KanbanTasks_ColumnId");
+
+                    b.HasIndex("ColumnId", "Position")
+                        .HasDatabaseName("IX_KanbanTasks_ColumnId_Position");
+
+                    b.ToTable("KanbanTasks");
+                });
+
             modelBuilder.Entity("Source.Features.Newsletter.Models.NewsletterSubscription", b =>
                 {
                     b.Property<Guid>("Id")
@@ -561,6 +694,48 @@ namespace api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Source.Features.Kanban.Models.KanbanColumn", b =>
+                {
+                    b.HasOne("Source.Features.Kanban.Models.KanbanBoard", "Board")
+                        .WithMany("Columns")
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
+                });
+
+            modelBuilder.Entity("Source.Features.Kanban.Models.KanbanTask", b =>
+                {
+                    b.HasOne("Source.Features.Kanban.Models.KanbanBoard", "Board")
+                        .WithMany("Tasks")
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Source.Features.Kanban.Models.KanbanColumn", "Column")
+                        .WithMany("Tasks")
+                        .HasForeignKey("ColumnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
+
+                    b.Navigation("Column");
+                });
+
+            modelBuilder.Entity("Source.Features.Kanban.Models.KanbanBoard", b =>
+                {
+                    b.Navigation("Columns");
+
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("Source.Features.Kanban.Models.KanbanColumn", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

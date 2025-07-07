@@ -76,6 +76,14 @@ export function AppHeader() {
               </Link>
               
               <Link
+                href="/kanban"
+                className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50/70 dark:hover:bg-orange-900/20 rounded-xl transition-all duration-300 backdrop-blur-sm"
+              >
+                <span className="hidden sm:block">🎯 Kanban</span>
+                <span className="block sm:hidden">🎯</span>
+              </Link>
+              
+              <Link
                 href="/blog"
                 className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100/70 dark:hover:bg-gray-800/70 rounded-xl transition-all duration-300 backdrop-blur-sm"
               >

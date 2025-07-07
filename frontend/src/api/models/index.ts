@@ -6,15 +6,29 @@
  * OpenAPI spec version: v1
  */
 
+export * from './addSubtaskRequestDTO';
+export * from './addSubtaskResponseDTO';
 export * from './chatMessageDtoDTO';
+export * from './createBoardRequestDTO';
+export * from './createBoardResponseDTO';
+export * from './createTaskRequestDTO';
+export * from './createTaskResponseDTO';
 export * from './createUserRequestDTO';
 export * from './currentUserResponseDTO';
 export * from './getApiChatMessagesParams';
 export * from './getApiFilesImagesLatestParams';
+export * from './getApiKanbanChatStreamParams';
 export * from './getApiOpenrouterToolsChatStreamParams';
 export * from './getApiUsersParams';
+export * from './kanbanBoardDtoDTO';
+export * from './kanbanBoardSummaryDtoDTO';
+export * from './kanbanColumnDtoDTO';
+export * from './kanbanSubtaskDtoDTO';
+export * from './kanbanTaskDtoDTO';
 export * from './loginRequestDTO';
 export * from './loginUserResponseDTO';
+export * from './moveTaskRequestDTO';
+export * from './moveTaskResponseDTO';
 export * from './postApiFilesUploadBody';
 export * from './postApiFilesUploadImageBody';
 export * from './problemDetailsDTO';
@@ -25,6 +39,8 @@ export * from './saveEmailToNewsletterResponseDTO';
 export * from './sendOtpRequestDTO';
 export * from './sendOtpResponseDTO';
 export * from './subscribeToNewsletterRequestDTO';
+export * from './toggleSubtaskResponseDTO';
 export * from './updateUserRequestDTO';
+export * from './verifyOtpCookieResponseDTO';
 export * from './verifyOtpRequestDTO';
 export * from './verifyOtpResponseDTO';

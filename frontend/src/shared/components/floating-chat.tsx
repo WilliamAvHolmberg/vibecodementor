@@ -29,6 +29,7 @@ function FloatingChatInterface({ onClose, onMinimize }: { onClose: () => void; o
     const timer = setTimeout(scrollToBottom, 100); // Small delay to ensure DOM is ready
     
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array = runs once when component mounts
 
   // Also scroll to bottom when messages change (but only after initial load)
@@ -49,6 +50,7 @@ function FloatingChatInterface({ onClose, onMinimize }: { onClose: () => void; o
       const timer = setTimeout(scrollToBottom, 50);
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages.length, isLoadingHistory]);
 
   const handleSendMessage = async () => {
@@ -186,6 +188,7 @@ export function FloatingChat() {
       if (hasInitialized) {
         setLastMessageCount(messages.length);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [messages.length, isLoadingHistory]);
 
     return null;

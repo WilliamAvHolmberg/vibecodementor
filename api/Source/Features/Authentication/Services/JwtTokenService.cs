@@ -19,7 +19,7 @@ public class JwtTokenService : IJwtTokenService
     private readonly string _jwtKey;
     private readonly string _jwtIssuer;
     private readonly string _jwtAudience;
-    private readonly int _expiryHours;
+    private readonly int _expiryMinutes;
 
     public JwtTokenService(IConfiguration configuration, ILogger<JwtTokenService> logger)
     {
@@ -30,9 +30,10 @@ public class JwtTokenService : IJwtTokenService
         _jwtKey = _configuration["Jwt:Key"] ?? "your-secret-key-here-minimum-32-characters-long";
         _jwtIssuer = _configuration["Jwt:Issuer"] ?? "api";
         _jwtAudience = _configuration["Jwt:Audience"] ?? "api";
-        _expiryHours = int.TryParse(_configuration["Jwt:ExpiryMinutes"], out var minutes) ? minutes / 60 : 24;
+        _expiryMinutes = int.TryParse(_configuration["Jwt:ExpiryMinutes"], out var minutes) ? minutes : 1440; // Default: 24 hours
 
-        _logger.LogInformation("🔐 JWT Token Service initialized (Expiry: {Hours}h)", _expiryHours);
+        _logger.LogInformation("🔐 JWT Token Service initialized (Expiry: {Minutes} minutes / {Days} days)", 
+            _expiryMinutes, Math.Round(_expiryMinutes / 1440.0, 1));
     }
 
     public string GenerateToken(User user, string? authMethod = null)
@@ -43,7 +44,7 @@ public class JwtTokenService : IJwtTokenService
 
     public (string Token, DateTime ExpiresAt) GenerateTokenWithExpiry(User user, string? authMethod = null)
     {
-        var expiresAt = DateTime.UtcNow.AddHours(_expiryHours);
+        var expiresAt = DateTime.UtcNow.AddMinutes(_expiryMinutes);
         
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

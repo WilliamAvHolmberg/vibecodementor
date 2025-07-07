@@ -34,6 +34,30 @@ public static class AuthenticationExtensions
                 ValidAudience = jwtAudience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             };
+
+            // Configure to read JWT tokens from cookies
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    // First check the Authorization header (default behavior)
+                    var token = context.Request.Headers.Authorization
+                        .FirstOrDefault()?.Split(" ").Last();
+
+                    // If no Authorization header token, check cookies
+                    if (string.IsNullOrEmpty(token))
+                    {
+                        token = context.Request.Cookies["auth-token"];
+                    }
+
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        context.Token = token;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
         });
 
         services.AddAuthorization();
