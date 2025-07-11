@@ -23,6 +23,8 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<KanbanBoard> KanbanBoards { get; set; }
     public DbSet<KanbanColumn> KanbanColumns { get; set; }
     public DbSet<KanbanTask> KanbanTasks { get; set; }
+    public DbSet<KanbanChatSession> KanbanChatSessions { get; set; }
+    public DbSet<KanbanChatMessage> KanbanChatMessages { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -170,6 +172,50 @@ public class ApplicationDbContext : IdentityDbContext<User>
             entity.HasOne(e => e.Column)
                 .WithMany(e => e.Tasks)
                 .HasForeignKey(e => e.ColumnId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure KanbanChatSession entity
+        builder.Entity<KanbanChatSession>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.BoardId).HasDatabaseName("IX_KanbanChatSessions_BoardId");
+            entity.HasIndex(e => e.UserId).HasDatabaseName("IX_KanbanChatSessions_UserId");
+            entity.HasIndex(e => new { e.BoardId, e.IsActive, e.UpdatedAt }).HasDatabaseName("IX_KanbanChatSessions_BoardId_IsActive_UpdatedAt");
+            
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+                
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
+            entity.HasOne(e => e.Board)
+                .WithMany(e => e.ChatSessions)
+                .HasForeignKey(e => e.BoardId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure KanbanChatMessage entity
+        builder.Entity<KanbanChatMessage>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.SessionId).HasDatabaseName("IX_KanbanChatMessages_SessionId");
+            entity.HasIndex(e => e.UserId).HasDatabaseName("IX_KanbanChatMessages_UserId");
+            entity.HasIndex(e => new { e.SessionId, e.Order }).HasDatabaseName("IX_KanbanChatMessages_SessionId_Order");
+            entity.HasIndex(e => e.CreatedAt).HasDatabaseName("IX_KanbanChatMessages_CreatedAt");
+            
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+                
+            entity.Property(e => e.Content)
+                .HasColumnType("text"); // Allow large content for LLM responses
+
+            entity.HasOne(e => e.Session)
+                .WithMany(e => e.Messages)
+                .HasForeignKey(e => e.SessionId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

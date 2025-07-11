@@ -10,6 +10,7 @@ alwaysApply: false
 - **MediatR for consistency** - Predictable command/query patterns
 - **ASP.NET Core Identity** - Use framework features, avoid custom auth
 - **Result pattern** - Explicit success/failure handling
+- **ALWAYS RETURN TYPES IN CONTROLLERS** - In order for the swagger schema generator to work, (frontend uses orval) WE NEED TO RETURN ACTUAL TYPES; IF NOT, FRONTEND TYPES WILL NOT WORK!! THIS IS SUPER IMPORTANT!
 
 ## 📁 Structure
 ```

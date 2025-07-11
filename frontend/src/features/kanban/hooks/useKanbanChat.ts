@@ -1,20 +1,73 @@
 "use client";
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { ChatMessage, StreamState, StreamEventType } from '../../openrouter/types';
 import { useEventSourceStream } from '../../openrouter/hooks/useEventSourceStream';
+import { useKanbanChatSessions, useKanbanChatSessionMessages } from './useKanbanChatSessions';
 
-export const useKanbanChat = (conversationId: string, boardId?: string) => {
+export const useKanbanChat = (boardId: string) => {
+  // Track the active session ID (may differ from backend's "current" session)
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+
+  // Session management
+  const { 
+    currentSession, 
+    sessionId, 
+    isLoadingCurrentSession, 
+    createNewSession, 
+    isCreatingSession 
+  } = useKanbanChatSessions(boardId);
+
+  // Load messages from active session (or current session if none selected)
+  const effectiveSessionId = activeSessionId || sessionId;
+  const { 
+    messages: sessionMessages, 
+    isLoadingMessages,
+  } = useKanbanChatSessionMessages(effectiveSessionId);
+
   // Messages state that will match backend structure
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentState, setCurrentState] = useState<StreamState | ''>('');
   const [currentStreamingContent, setCurrentStreamingContent] = useState('');
+  const [loadedSessionId, setLoadedSessionId] = useState<string | null>(null);
 
   // Use our EventSource abstraction
   const { isStreaming, startStream, closeStream, createUrlWithParams } = useEventSourceStream();
 
+  // Auto-create session if none exists
+  useEffect(() => {
+    if (!isLoadingCurrentSession && !currentSession && !isCreatingSession) {
+      console.log('🎯 No current session found, creating new session...');
+      createNewSession();
+    }
+  }, [isLoadingCurrentSession, currentSession, isCreatingSession, createNewSession]);
+
+  // Load messages from database when session is ready (ONCE per session)
+  useEffect(() => {
+    const currentEffectiveSessionId = activeSessionId || sessionId;
+    
+    if (currentEffectiveSessionId && currentEffectiveSessionId !== loadedSessionId && sessionMessages.length > 0) {
+      console.log('🎯 Loading messages from database:', sessionMessages.length);
+      setMessages(sessionMessages);
+      setLoadedSessionId(currentEffectiveSessionId);
+    } else if (currentEffectiveSessionId && currentEffectiveSessionId !== loadedSessionId && sessionMessages.length === 0 && !isLoadingMessages) {
+      // Session exists but no messages - clear any existing messages and mark as loaded
+      console.log('🎯 New session with no messages, clearing chat');
+      setMessages([]);
+      setLoadedSessionId(currentEffectiveSessionId);
+    }
+  }, [activeSessionId, sessionId, sessionMessages, loadedSessionId, isLoadingMessages]);
+
   // Function to send a message to Kanban LLM
   const sendMessage = useCallback(async (message: string, modelId: string = 'google/gemini-2.5-flash') => {
+    const currentEffectiveSessionId = activeSessionId || sessionId;
+    
+    // Don't send if no session available yet
+    if (!currentEffectiveSessionId) {
+      console.log('🎯 No session ID available yet, waiting...');
+      return;
+    }
+
     try {
       // Reset streaming state
       setCurrentStreamingContent('');
@@ -37,7 +90,7 @@ export const useKanbanChat = (conversationId: string, boardId?: string) => {
       // Create params for the kanban stream
       const params: Record<string, string> = {
         message,
-        conversationId,
+        conversationId: currentEffectiveSessionId, // Use effective session ID
         model: modelId
       };
 
@@ -200,28 +253,81 @@ export const useKanbanChat = (conversationId: string, boardId?: string) => {
       console.error('❌ Error sending kanban message:', error);
       closeStream();
     }
-  }, [startStream, closeStream, createUrlWithParams, conversationId, boardId]);
+  }, [startStream, closeStream, createUrlWithParams, activeSessionId, sessionId, boardId]);
 
   // Load conversation history
   const loadConversationHistory = useCallback((history: ChatMessage[]) => {
     setMessages(history);
   }, []);
 
-  // Reset chat function
-  const resetChat = useCallback(() => {
+  // Reset chat function - now creates a new session
+  const resetChat = useCallback(async () => {
     setMessages([]);
     setCurrentStreamingContent('');
     setCurrentState('');
+    setLoadedSessionId(null); // Reset loaded session tracking
+    setActiveSessionId(null); // Reset active session to use the new current session
     closeStream();
-  }, [closeStream]);
+    
+    // Create new session
+    try {
+      await createNewSession();
+      console.log('🎯 Created new chat session');
+    } catch (error) {
+      console.error('❌ Error creating new session:', error);
+    }
+  }, [closeStream, createNewSession]);
+
+  // Create new session function
+  const startNewChat = useCallback(async () => {
+    await resetChat();
+  }, [resetChat]);
+
+  // Switch to existing session function
+  const switchToSession = useCallback(async (newSessionId: string) => {
+    const currentEffectiveSessionId = activeSessionId || sessionId;
+    
+    if (newSessionId === currentEffectiveSessionId) {
+      console.log('🎯 Already on this session');
+      return;
+    }
+
+    console.log('🎯 Switching to session:', newSessionId);
+    
+    // Reset current state
+    setMessages([]);
+    setCurrentStreamingContent('');
+    setCurrentState('');
+    setLoadedSessionId(null);
+    closeStream();
+
+    // Set the new active session - this will trigger loading messages via useKanbanChatSessionMessages
+    setActiveSessionId(newSessionId);
+    
+    console.log('🎯 Switched to session:', newSessionId);
+  }, [activeSessionId, sessionId, closeStream]);
 
   return {
+    // Messages and streaming state
     messages,
     isStreaming,
     currentStreamingContent,
     currentState,
+    
+    // Core functions
     sendMessage,
     resetChat,
-    loadConversationHistory
+    startNewChat,
+    switchToSession,
+    loadConversationHistory,
+    
+    // Session info
+    sessionId: activeSessionId || sessionId, // Return the effective session ID
+    currentSession,
+    isLoadingCurrentSession,
+    isLoadingMessages,
+    
+    // Loading states
+    isReady: !isLoadingCurrentSession && !isCreatingSession && !!(activeSessionId || sessionId)
   };
 }; 

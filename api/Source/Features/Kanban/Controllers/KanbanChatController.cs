@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Http.Features;
 using Source.Features.Kanban.Hubs;
 using Source.Features.Kanban.Tools;
+using Source.Features.Kanban.Commands;
+using Source.Features.Kanban.Queries;
 using Api.Features.OpenRouter.Services;
 using Api.Features.OpenRouter.Models;
 using Api.Features.OpenRouter;
@@ -15,6 +17,18 @@ using MediatR;
 
 namespace Source.Features.Kanban.Controllers;
 
+public record CreateChatSessionRequest(Guid BoardId);
+
+public record GetChatSessionMessagesResponse(Guid SessionId, Guid BoardId, List<ChatMessageResponseDto> Messages);
+
+public record ChatMessageResponseDto(Guid Id, string Role, string Content, int Order, DateTime CreatedAt);
+
+public record GetCurrentChatSessionResponse(Guid SessionId, Guid BoardId, DateTime CreatedAt, DateTime UpdatedAt, int MessageCount);
+
+public record GetBoardChatSessionsResponse(Guid BoardId, Guid? CurrentSessionId, List<ChatSessionSummaryResponseDto> Sessions);
+
+public record ChatSessionSummaryResponseDto(Guid SessionId, DateTime CreatedAt, DateTime UpdatedAt, int MessageCount, bool IsCurrent);
+
 [ApiController]
 [Route("api/kanban")]
 [Authorize] // JWT auth required
@@ -23,7 +37,6 @@ public class KanbanChatController : ControllerBase
     private readonly ILogger<KanbanChatController> _logger;
     private readonly IConfiguration _configuration;
     private readonly IHubContext<KanbanHub> _hubContext;
-    private readonly ConversationCacheService _conversationCache;
     private readonly OpenRouterClient _openRouterClient;
     private readonly IMediator _mediator;
 
@@ -31,14 +44,12 @@ public class KanbanChatController : ControllerBase
         ILogger<KanbanChatController> logger,
         IConfiguration configuration,
         IHubContext<KanbanHub> hubContext,
-        ConversationCacheService conversationCache,
         OpenRouterClient openRouterClient,
         IMediator mediator)
     {
         _logger = logger;
         _configuration = configuration;
         _hubContext = hubContext;
-        _conversationCache = conversationCache;
         _openRouterClient = openRouterClient;
         _mediator = mediator;
     }
@@ -106,13 +117,6 @@ public class KanbanChatController : ControllerBase
             {
                 try
                 {
-                    // Send real-time updates to SignalR if boardId is provided
-                    if (!string.IsNullOrEmpty(boardId))
-                    {
-                        await _hubContext.Clients.Group($"Board_{boardId}")
-                            .SendAsync("KanbanUpdate", new { EventType = e.EventType, Data = e }, cancellationToken);
-                    }
-
                     // Direct pass-through of events for streaming
                     await WriteStreamEvent(e.EventType.ToString(), e);
                 }
@@ -123,9 +127,50 @@ public class KanbanChatController : ControllerBase
                 }
             };
 
-            // Build conversation messages
-            var conversationKey = $"kanban_{conversationId}";
-            var messages = _conversationCache.GetMessages(conversationKey);
+            // Get or create chat session for this board
+            Guid sessionId;
+            if (Guid.TryParse(conversationId, out var parsedConversationId))
+            {
+                sessionId = parsedConversationId;
+            }
+            else
+            {
+                // Create new session if conversationId is not a valid GUID
+                var boardGuid = Guid.TryParse(boardId, out var parsedBoardId) ? parsedBoardId : Guid.Empty;
+                if (boardGuid == Guid.Empty)
+                {
+                    await WriteErrorEvent("Board ID is required for new chat sessions");
+                    return;
+                }
+
+                var createSessionResult = await _mediator.Send(new CreateChatSessionCommand(boardGuid, userId));
+                if (!createSessionResult.IsSuccess)
+                {
+                    await WriteErrorEvent($"Failed to create chat session: {createSessionResult.Error}");
+                    return;
+                }
+                sessionId = createSessionResult.Value.SessionId;
+            }
+
+            // Get existing messages from database
+            var messagesResult = await _mediator.Send(new GetChatMessagesQuery(sessionId, userId));
+            if (!messagesResult.IsSuccess)
+            {
+                await WriteErrorEvent($"Failed to load chat history: {messagesResult.Error}");
+                return;
+            }
+
+            // DEBUG: Log loaded messages from database
+            _logger.LogInformation("Loaded {MessageCount} messages from database for session {SessionId}", 
+                messagesResult.Value.Messages.Count, sessionId);
+            
+            var messages = messagesResult.Value.Messages
+                .Select(m => new Message { 
+                    Role = m.Role, 
+                    Content = m.Content,
+                    ToolCallId = m.ToolCallId
+                })
+                .ToList();
 
             // Add default system message for kanban tools if no previous messages with system role
             if (!messages.Any(m => m.Role!.Equals("system", StringComparison.OrdinalIgnoreCase)))
@@ -203,7 +248,8 @@ You are also a world-class project planner and collaborator. When users mention 
 
 Remember: You're not just a tool executor - you're a trusted planning partner who helps users organize their work effectively while respecting their autonomy and preferences!";
 
-                messages.Add(Message.FromSystem(systemMessage));
+                // CRITICAL: System message must be FIRST, not last
+                messages.Insert(0, Message.FromSystem(systemMessage));
             }
 
             // Add current user message
@@ -219,14 +265,44 @@ Remember: You're not just a tool executor - you're a trusted planning partner wh
                 Stream = true
             };
 
+            // DEBUG: Log what we're sending to OpenRouter
+            _logger.LogInformation("Sending {MessageCount} messages to OpenRouter:", messages.Count);
+            for (int i = 0; i < messages.Count; i++)
+            {
+                var msg = messages[i];
+                var contentStr = msg.Content?.ToString() ?? "";
+                var preview = contentStr.Length > 100 ? contentStr.Substring(0, 100) + "..." : contentStr;
+                _logger.LogInformation("Message {Index}: Role={Role}, Content={Preview}", i, msg.Role, preview);
+            }
+
             try
             {
+                // Save user message first
+                await _mediator.Send(new SaveChatMessageCommand(sessionId, userId, "user", message));
+
                 // Start streaming with events
                 var (response, finalMessages) = await client.ProcessMessageAsync(chatRequest, maxToolCalls: 10, cancellationToken);
-                _conversationCache.SetMessages(conversationKey, finalMessages);
+                
+                // Save all new messages to database (skip the ones we already loaded from DB)
+                // The finalMessages will contain: [DB messages] + [system message if added] + [user message] + [new assistant/tool messages]
+                var dbMessageCount = messagesResult.Value.Messages.Count;
+                var systemMessageAdded = !messagesResult.Value.Messages.Any(m => m.Role.Equals("system", StringComparison.OrdinalIgnoreCase)) ? 1 : 0;
+                var skipCount = dbMessageCount + systemMessageAdded + 1; // +1 for user message we just added
+                
+                for (int i = skipCount; i < finalMessages.Count; i++)
+                {
+                    var msg = finalMessages[i];
+                    // Save with correct role and ToolCallId (if present)
+                    await _mediator.Send(new SaveChatMessageCommand(sessionId, userId, msg.Role!, msg.Content?.ToString() ?? "", msg.ToolCallId));
+                }
                 
                 // Send a final "done" event
-                await WriteStreamEvent("done", new { });
+                await WriteStreamEvent("done", new { sessionId = sessionId });
+            }
+            catch (HttpRequestException httpEx)
+            {
+                _logger.LogError(httpEx, "HTTP error from OpenRouter API. Status: {Message}", httpEx.Message);
+                await WriteErrorEvent($"OpenRouter API Error: {httpEx.Message}");
             }
             catch (Exception ex)
             {
@@ -242,37 +318,105 @@ Remember: You're not just a tool executor - you're a trusted planning partner wh
     }
 
     /// <summary>
-    /// Get conversation history for a kanban chat
+    /// Get conversation history for a kanban chat session
     /// </summary>
-    [HttpGet("chat/conversations/{conversationId}")]
-    public IActionResult GetKanbanConversation([FromRoute] string conversationId)
+    [HttpGet("chat/sessions/{sessionId}/messages")]
+    public async Task<ActionResult<GetChatSessionMessagesResponse>> GetChatSessionMessages([FromRoute] string sessionId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
-        var conversationKey = $"kanban_{conversationId}";
-        var messages = _conversationCache.GetMessages(conversationKey)
+        if (!Guid.TryParse(sessionId, out var sessionGuid))
+            return BadRequest("Invalid session ID");
+
+        var result = await _mediator.Send(new GetChatMessagesQuery(sessionGuid, userId));
+        if (!result.IsSuccess)
+            return BadRequest(result.Error);
+
+        // Filter out system messages for frontend display and map to response DTOs
+        var userMessages = result.Value.Messages
             .Where(m => m.Role != "system")
+            .Select(m => new ChatMessageResponseDto(m.Id, m.Role, m.Content, m.Order, m.CreatedAt))
             .ToList();
         
-        return Ok(messages);
+        return Ok(new GetChatSessionMessagesResponse(result.Value.SessionId, result.Value.BoardId, userMessages));
     }
 
     /// <summary>
-    /// Clear conversation history for a kanban chat
+    /// Create a new chat session for a board
     /// </summary>
-    [HttpDelete("chat/conversations/{conversationId}")]
-    public IActionResult ClearKanbanConversation([FromRoute] string conversationId)
+    [HttpPost("chat/sessions")]
+    public async Task<ActionResult<CreateChatSessionResponse>> CreateChatSession([FromBody] CreateChatSessionRequest request)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
-        var conversationKey = $"kanban_{conversationId}";
-        _conversationCache.SetMessages(conversationKey, new List<Message>());
-        
-        return Ok(new { message = "Conversation cleared" });
+        var result = await _mediator.Send(new CreateChatSessionCommand(request.BoardId, userId));
+        if (!result.IsSuccess)
+            return BadRequest(result.Error);
+
+        return CreatedAtAction(nameof(GetChatSessionMessages), new { sessionId = result.Value.SessionId }, result.Value);
+    }
+
+    /// <summary>
+    /// Get current chat session for a board
+    /// </summary>
+    [HttpGet("boards/{boardId}/current-session")]
+    public async Task<ActionResult<GetCurrentChatSessionResponse?>> GetCurrentChatSession([FromRoute] string boardId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
+
+        if (!Guid.TryParse(boardId, out var boardGuid))
+            return BadRequest("Invalid board ID");
+
+        var result = await _mediator.Send(new GetCurrentChatSessionQuery(boardGuid, userId));
+        if (!result.IsSuccess)
+            return BadRequest(result.Error);
+
+        // Map to response DTO if session exists
+        if (result.Value == null)
+            return Ok((GetCurrentChatSessionResponse?)null);
+
+        var response = new GetCurrentChatSessionResponse(
+            result.Value.SessionId,
+            result.Value.BoardId,
+            result.Value.CreatedAt,
+            result.Value.UpdatedAt,
+            result.Value.MessageCount
+        );
+
+        return Ok(response);
+    }
+
+    /// <summary>
+    /// Get all chat sessions for a board
+    /// </summary>
+    [HttpGet("boards/{boardId}/sessions")]
+    public async Task<ActionResult<GetBoardChatSessionsResponse>> GetBoardChatSessions([FromRoute] string boardId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
+
+        if (!Guid.TryParse(boardId, out var boardGuid))
+            return BadRequest("Invalid board ID");
+
+        var result = await _mediator.Send(new GetBoardChatSessionsQuery(boardGuid, userId));
+        if (!result.IsSuccess)
+            return BadRequest(result.Error);
+
+        // Map to response DTOs
+        var sessionDtos = result.Value.Sessions
+            .Select(s => new ChatSessionSummaryResponseDto(s.SessionId, s.CreatedAt, s.UpdatedAt, s.MessageCount, s.IsCurrent))
+            .ToList();
+
+        var response = new GetBoardChatSessionsResponse(result.Value.BoardId, result.Value.CurrentSessionId, sessionDtos);
+
+        return Ok(response);
     }
 
     // Helper method to write SSE events

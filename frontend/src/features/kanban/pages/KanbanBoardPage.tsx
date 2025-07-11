@@ -27,7 +27,6 @@ interface KanbanBoardPageProps {
 
 export function KanbanBoardPage({ boardId }: KanbanBoardPageProps) {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const [conversationId] = useState(() => `kanban-${boardId}-${Date.now()}`);
   
   // Resizable panel state
   const [chatWidth, setChatWidth] = useState(400); // Default 400px instead of 320px
@@ -168,7 +167,6 @@ export function KanbanBoardPage({ boardId }: KanbanBoardPageProps) {
         >
           <KanbanChatContainer
             boardId={boardId}
-            conversationId={conversationId}
           />
         </div>
       </div>

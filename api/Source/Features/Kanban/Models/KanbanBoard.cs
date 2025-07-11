@@ -32,7 +32,13 @@ public class KanbanBoard
     
     public bool IsActive { get; set; } = true;
     
+    /// <summary>
+    /// Current active chat session ID for this board
+    /// </summary>
+    public Guid? CurrentSessionId { get; set; }
+    
     // Navigation properties
     public virtual ICollection<KanbanColumn> Columns { get; set; } = new List<KanbanColumn>();
     public virtual ICollection<KanbanTask> Tasks { get; set; } = new List<KanbanTask>();
+    public virtual ICollection<KanbanChatSession> ChatSessions { get; set; } = new List<KanbanChatSession>();
 } 
