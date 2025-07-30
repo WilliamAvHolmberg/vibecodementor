@@ -14,8 +14,18 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Accept build arguments for Next.js public environment variables
+# The build script will dynamically pass any NEXT_PUBLIC_* variables found in .env
+# Add new ARG declarations here as needed, or they will be ignored gracefully
+
 ARG NEXT_PUBLIC_GA_ID
 ENV NEXT_PUBLIC_GA_ID=$NEXT_PUBLIC_GA_ID
+
+ARG NEXT_PUBLIC_MAPBOX_TOKEN  
+ENV NEXT_PUBLIC_MAPBOX_TOKEN=$NEXT_PUBLIC_MAPBOX_TOKEN
+
+# Add additional NEXT_PUBLIC_* variables here following the same pattern:
+# ARG NEXT_PUBLIC_VARIABLE_NAME
+# ENV NEXT_PUBLIC_VARIABLE_NAME=$NEXT_PUBLIC_VARIABLE_NAME
 
 # Copy package files and install all dependencies
 COPY frontend/package*.json ./

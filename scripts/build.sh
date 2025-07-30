@@ -36,12 +36,28 @@ echo ""
 # Build Frontend Docker image  
 echo -e "${BLUE}🎨 Building Frontend (Next.js) for linux/amd64...${NC}"
 
-# Read environment variables from .env file for build args
+# Dynamically discover all NEXT_PUBLIC_* variables from .env file
+BUILD_ARGS=""
 if [ -f ".env" ]; then
-    NEXT_PUBLIC_GA_ID=$(grep "^NEXT_PUBLIC_GA_ID=" .env | cut -d '=' -f2-)
-    BUILD_ARGS="--build-arg NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID}"
+    echo -e "${YELLOW}🔍 Discovering NEXT_PUBLIC_* environment variables...${NC}"
+    
+    # Find all NEXT_PUBLIC_ variables in .env file
+    NEXT_PUBLIC_VARS=$(grep "^NEXT_PUBLIC_" .env || true)
+    
+    if [ ! -z "$NEXT_PUBLIC_VARS" ]; then
+        while IFS= read -r line; do
+            if [ ! -z "$line" ]; then
+                VAR_NAME=$(echo "$line" | cut -d '=' -f1)
+                VAR_VALUE=$(echo "$line" | cut -d '=' -f2-)
+                BUILD_ARGS="$BUILD_ARGS --build-arg $VAR_NAME=$VAR_VALUE"
+                echo -e "${GREEN}  ✓ Found: $VAR_NAME${NC}"
+            fi
+        done <<< "$NEXT_PUBLIC_VARS"
+    else
+        echo -e "${YELLOW}  ⚠️  No NEXT_PUBLIC_* variables found in .env${NC}"
+    fi
 else
-    BUILD_ARGS=""
+    echo -e "${YELLOW}  ⚠️  No .env file found, skipping environment variables${NC}"
 fi
 
 docker build --platform linux/amd64 -f ./frontend/frontend.Dockerfile \

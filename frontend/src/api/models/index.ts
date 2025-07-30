@@ -50,4 +50,3 @@ export * from './toggleSubtaskResponseDTO';
 export * from './updateUserRequestDTO';
 export * from './verifyOtpCookieResponseDTO';
 export * from './verifyOtpRequestDTO';
-export * from './verifyOtpResponseDTO';

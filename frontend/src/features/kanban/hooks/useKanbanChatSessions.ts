@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { 
   useGetApiKanbanBoardsBoardIdCurrentSession,
   useGetApiKanbanBoardsBoardIdSessions,
@@ -8,13 +8,9 @@ import {
   usePostApiKanbanChatSessions,
   getGetApiKanbanBoardsBoardIdCurrentSessionQueryKey,
   getGetApiKanbanBoardsBoardIdSessionsQueryKey,
-  getGetApiKanbanChatSessionsSessionIdMessagesQueryKey
 } from '../../../api/hooks/api';
 import type { 
   CreateChatSessionRequestDTO,
-  GetCurrentChatSessionResponseDTO,
-  GetBoardChatSessionsResponseDTO,
-  GetChatSessionMessagesResponseDTO,
   ChatMessageResponseDtoDTO
 } from '../../../api/models';
 import { ChatMessage } from '../../openrouter/types';
@@ -48,7 +44,7 @@ export const useKanbanChatSessions = (boardId: string) => {
   // Create new session mutation
   const createSessionMutation = usePostApiKanbanChatSessions({
     mutation: {
-      onSuccess: (data) => {
+      onSuccess: () => {
         // Invalidate and refetch current session
         queryClient.invalidateQueries({
           queryKey: getGetApiKanbanBoardsBoardIdCurrentSessionQueryKey(boardId)
