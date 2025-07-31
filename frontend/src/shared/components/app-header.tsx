@@ -83,6 +83,13 @@ export function AppHeader() {
                 <span className="block sm:hidden">🎯</span>
               </Link>
               <Link
+                href="/fake-iphone"
+                className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50/70 dark:hover:bg-orange-900/20 rounded-xl transition-all duration-300 backdrop-blur-sm"
+              >
+                <span className="hidden sm:block">Fake iPhone</span>
+                <span className="block sm:hidden">🤖</span>
+              </Link>
+              <Link
                 href="/driving-demo"
                 className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50/70 dark:hover:bg-orange-900/20 rounded-xl transition-all duration-300 backdrop-blur-sm"
               >
@@ -126,20 +133,6 @@ export function AppHeader() {
             ) : (
               // CTAs
               <div className="flex items-center gap-2 sm:gap-3">
-                <Button 
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className="group relative overflow-hidden"
-                >
-                  <Link href="/#newsletter" className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/40 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
-                    <span className="text-sm group-hover:scale-110 transition-transform duration-200">🚀</span>
-                    <span className="hidden md:block font-semibold">Join Movement</span>
-                    <span className="hidden sm:block md:hidden font-semibold">Join</span>
-                    <span className="block sm:hidden font-semibold">✨</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </Link>
-                </Button>
                 <Button 
                   asChild
                   variant="ghost" 
