@@ -2,6 +2,8 @@
 
 import { forwardRef } from 'react';
 import { LockScreenState } from '../types';
+import { AppIcon } from './AppIcon';
+import { APP_ICONS } from '../constants/app-icons';
 
 interface LockScreenPreviewProps {
     state: LockScreenState;
@@ -33,16 +35,16 @@ export const LockScreenPreview = forwardRef<HTMLDivElement, LockScreenPreviewPro
     <div ref={ref} className={`relative mx-auto ${className}`} data-download-target>
       {includeFrame ? (
         /* iPhone Frame */
-        <div className="relative w-[344px] h-[745px] bg-black rounded-[50px] p-2 shadow-2xl">
+        <div className="relative w-[387px] h-[824px] bg-black rounded-[50px] p-[6px] shadow-2xl">
           {/* Screen */}
-          <div className="relative w-full h-full rounded-[40px] overflow-hidden">
+          <div className="relative w-[375px] h-[812px] rounded-[40px] overflow-hidden" data-screen-content>
             <ScreenBackground state={state} />
             <LockScreenContent state={state} signalBars={signalBars} batteryFillWidth={batteryFillWidth} batteryColor={batteryColor} />
           </div>
         </div>
       ) : (
         /* Just the screen content */
-        <div className="relative w-[375px] h-[812px] rounded-[40px] overflow-hidden">
+        <div className="relative w-[375px] h-[812px] rounded-[40px] overflow-hidden" data-screen-content>
           <ScreenBackground state={state} />
           <LockScreenContent state={state} signalBars={signalBars} batteryFillWidth={batteryFillWidth} batteryColor={batteryColor} />
         </div>
@@ -114,42 +116,33 @@ function LockScreenContent({ state, signalBars, batteryFillWidth, batteryColor }
                         {state.notifications.map((notification) => (
                             <div
                                 key={notification.id}
-                                className="bg-white/20 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/10"
+                                className="bg-white/20 backdrop-blur-md rounded-2xl p-2.5 shadow-lg border border-white/10 relative"
                             >
-                                <div className="flex items-start space-x-3">
-                                    {/* App Icon */}
-                                    <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm flex-shrink-0 flex items-center justify-center">
-                                        {notification.appIconUrl ? (
-                                            <img
-                                                src={notification.appIconUrl}
-                                                alt={notification.appName}
-                                                className="w-full h-full object-cover"
-                                                onError={(e) => {
-                                                    // Fallback to emoji if image fails
-                                                    const target = e.target as HTMLImageElement;
-                                                    target.style.display = 'none';
-                                                    const parent = target.parentElement;
-                                                    if (parent) {
-                                                        parent.innerHTML = `<span class="text-2xl">${notification.appIcon}</span>`;
-                                                    }
-                                                }}
-                                            />
-                                        ) : (
-                                            <span className="text-2xl">{notification.appIcon}</span>
-                                        )}
+                                {/* Time ago - Fixed in top right corner */}
+                                <div className="absolute top-1 right-2">
+                                    <span className="text-xs text-white/50">
+                                        {notification.timeAgo}
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center space-x-2 pr-10">
+                                    {/* App Icon - Always centered */}
+                                    <div className="flex-shrink-0 shadow-sm">
+                                        <AppIcon
+                                            src={APP_ICONS.find(icon => icon.id === notification.appIcon)?.filename || 'message.jpg'}
+                                            alt={notification.appName}
+                                            size="md"
+                                            customUrl={notification.appIconUrl}
+                                            className="shadow-sm"
+                                        />
                                     </div>
 
-                                    {/* Content */}
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center justify-between mb-1">
-                                            <span className="text-sm font-semibold text-white truncate">
-                                                {notification.appName}
-                                            </span>
-                                            <span className="text-xs text-white/70 ml-2 flex-shrink-0">
-                                                {notification.timeAgo}
-                                            </span>
-                                        </div>
-                                        <p className="text-sm text-white leading-relaxed">
+                                    {/* Content - Centered but flexible, wider */}
+                                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                        <span className="text-xs font-bold text-black truncate mb-0.5">
+                                            {notification.appName}
+                                        </span>
+                                        <p className="text-xs text-black leading-tight">
                                             {notification.message}
                                         </p>
                                     </div>

@@ -7,6 +7,7 @@ export { FakeIPhonePage } from './pages/FakeIPhonePage';
 export { LockScreenPreview } from './components/LockScreenPreview';
 export { NotificationCard } from './components/NotificationCard';
 export { SimpleNotificationCard } from './components/SimpleNotificationCard';
+export { AppIcon } from './components/AppIcon';
 export { SystemControls } from './components/SystemControls';
 export { NotificationControls } from './components/NotificationControls';
 export { DownloadControls } from './components/DownloadControls';
@@ -21,6 +22,9 @@ export { useHtmlDownload } from './hooks/useCanvasDownload';
 export type { 
   LockScreenState, 
   Notification, 
-  DownloadOptions, 
-  AppIconOption 
-} from './types'; 
+  DownloadOptions
+} from './types';
+
+// Constants
+export { APP_ICONS, QUICK_ICONS } from './constants/app-icons';
+export type { AppIconOption } from './constants/app-icons'; 

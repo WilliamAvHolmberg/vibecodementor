@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Notification, AppIconOption } from '../types';
+import { Notification } from '../types';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
+import { AppIcon } from './AppIcon';
+import { APP_ICONS, AppIconOption } from '../constants/app-icons';
 
 interface NotificationCardProps {
   notification: Notification;
@@ -11,39 +13,29 @@ interface NotificationCardProps {
   onRemove: (id: string) => void;
 }
 
-const APP_ICONS: AppIconOption[] = [
-  { emoji: '💬', name: 'Messages' },
-  { emoji: '📧', name: 'Mail' },
-  { emoji: '📱', name: 'Phone' },
-  { emoji: '📷', name: 'Camera' },
-  { emoji: '🎵', name: 'Music' },
-  { emoji: '📺', name: 'TV' },
-  { emoji: '🎮', name: 'Games' },
-  { emoji: '⚽', name: 'Sports' },
-  { emoji: '📰', name: 'News' },
-  { emoji: '🏦', name: 'Banking' },
-  { emoji: '🛒', name: 'Shopping' },
-  { emoji: '🍕', name: 'Food' },
-  { emoji: '🚗', name: 'Transport' },
-  { emoji: '☁️', name: 'Weather' },
-  { emoji: '📊', name: 'Stocks' },
-];
-
 export function NotificationCard({ notification, onUpdate, onRemove }: NotificationCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleAppIconSelect = (icon: AppIconOption) => {
-    onUpdate(notification.id, { 
-      appIcon: icon.emoji, 
-      appName: icon.name 
+    onUpdate(notification.id, {
+      appIcon: icon.id,
+      appName: icon.name,
+      appIconUrl: undefined // Clear custom URL when selecting predefined icon
     });
   };
+
+  const currentIcon = APP_ICONS.find(icon => icon.id === notification.appIcon);
 
   return (
     <div className="border border-gray-200 rounded-lg p-4 space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <span className="text-2xl">{notification.appIcon}</span>
+          <AppIcon
+            src={currentIcon?.filename || 'message.jpg'}
+            alt={notification.appName}
+            size="sm"
+            customUrl={notification.appIconUrl}
+          />
           <span className="font-medium">{notification.appName}</span>
         </div>
         <div className="flex items-center space-x-2">
@@ -66,22 +58,37 @@ export function NotificationCard({ notification, onUpdate, onRemove }: Notificat
 
       {isExpanded && (
         <div className="space-y-3 pt-2 border-t border-gray-100">
+          {/* Custom Image URL */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Custom Icon URL</label>
+            <Input
+              value={notification.appIconUrl || ''}
+              onChange={(e) => onUpdate(notification.id, { appIconUrl: e.target.value || undefined })}
+              placeholder="https://example.com/icon.png (optional)"
+            />
+          </div>
+
           {/* App Icon Selection */}
           <div>
-            <label className="block text-sm font-medium mb-2">App Icon</label>
+            <label className="block text-sm font-medium mb-2">Predefined Icons</label>
             <div className="grid grid-cols-5 gap-2">
               {APP_ICONS.map((icon) => (
                 <button
-                  key={icon.emoji}
+                  key={icon.id}
                   className={`p-2 rounded border text-center hover:bg-gray-50 transition-colors ${
-                    notification.appIcon === icon.emoji 
-                      ? 'border-blue-500 bg-blue-50' 
+                    notification.appIcon === icon.id && !notification.appIconUrl
+                      ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200'
                   }`}
                   onClick={() => handleAppIconSelect(icon)}
                   title={icon.name}
                 >
-                  <div className="text-lg">{icon.emoji}</div>
+                  <AppIcon
+                    src={icon.filename}
+                    alt={icon.name}
+                    size="sm"
+                    className="mx-auto mb-1"
+                  />
                   <div className="text-xs text-gray-600 truncate">{icon.name}</div>
                 </button>
               ))}

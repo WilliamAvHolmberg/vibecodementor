@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Notification, AppIconOption } from '../types';
+import { Notification } from '../types';
+import { AppIcon } from './AppIcon';
+import { QUICK_ICONS, APP_ICONS, AppIconOption } from '../constants/app-icons';
 
 interface SimpleNotificationCardProps {
   notification: Notification;
@@ -9,24 +11,14 @@ interface SimpleNotificationCardProps {
   onRemove: (id: string) => void;
 }
 
-const QUICK_ICONS: AppIconOption[] = [
-  { emoji: '💬', name: 'Messages' },
-  { emoji: '📧', name: 'Mail' },
-  { emoji: '📱', name: 'Phone' },
-  { emoji: '📷', name: 'Camera' },
-  { emoji: '🎵', name: 'Music' },
-  { emoji: '📰', name: 'News' },
-  { emoji: '🏦', name: 'Banking' },
-  { emoji: '🍕', name: 'Food' },
-];
-
 export function SimpleNotificationCard({ notification, onUpdate, onRemove }: SimpleNotificationCardProps) {
   const [editingField, setEditingField] = useState<string | null>(null);
 
   const handleIconClick = (icon: AppIconOption) => {
-    onUpdate(notification.id, { 
-      appIcon: icon.emoji, 
-      appName: icon.name 
+    onUpdate(notification.id, {
+      appIcon: icon.id,
+      appName: icon.name,
+      appIconUrl: undefined // Clear custom URL when selecting predefined icon
     });
   };
 
@@ -43,31 +35,19 @@ export function SimpleNotificationCard({ notification, onUpdate, onRemove }: Sim
     }
   };
 
+  const currentIcon = APP_ICONS.find(icon => icon.id === notification.appIcon);
+
   return (
     <div className="group border border-gray-100 rounded-xl p-4 hover:border-gray-200 transition-colors bg-white">
       <div className="flex items-start space-x-3">
-        {/* App Icon - Custom image or emoji */}
+        {/* App Icon - Custom image or predefined */}
         <div className="relative">
-          <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-            {notification.appIconUrl ? (
-              <img 
-                src={notification.appIconUrl} 
-                alt={notification.appName}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  // Fallback to emoji if image fails to load
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const parent = target.parentElement;
-                  if (parent) {
-                    parent.innerHTML = `<span class="text-2xl">${notification.appIcon}</span>`;
-                  }
-                }}
-              />
-            ) : (
-              <span className="text-2xl">{notification.appIcon}</span>
-            )}
-          </div>
+          <AppIcon
+            src={currentIcon?.filename || 'message.jpg'}
+            alt={notification.appName}
+            size="lg"
+            customUrl={notification.appIconUrl}
+          />
           
           {/* Icon options on hover */}
           <div className="absolute top-full left-0 mt-2 hidden group-hover:block z-10">
@@ -76,7 +56,7 @@ export function SimpleNotificationCard({ notification, onUpdate, onRemove }: Sim
               <div className="mb-3">
                 <input
                   type="url"
-                  placeholder="Image URL (optional)"
+                  placeholder="Custom icon URL (optional)"
                   defaultValue={notification.appIconUrl || ''}
                   className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:border-blue-500"
                   onBlur={(e) => {
@@ -93,21 +73,22 @@ export function SimpleNotificationCard({ notification, onUpdate, onRemove }: Sim
                 />
               </div>
               
-              {/* Quick emoji icons */}
+              {/* Quick predefined icons */}
               <div className="grid grid-cols-4 gap-1">
                 {QUICK_ICONS.map((icon) => (
                   <button
-                    key={icon.emoji}
-                    className={`p-2 rounded hover:bg-gray-50 text-lg ${
-                      notification.appIcon === icon.emoji && !notification.appIconUrl ? 'bg-blue-50' : ''
+                    key={icon.id}
+                    className={`p-1 rounded hover:bg-gray-50 ${
+                      notification.appIcon === icon.id && !notification.appIconUrl ? 'bg-blue-50' : ''
                     }`}
-                    onClick={() => {
-                      handleIconClick(icon);
-                      onUpdate(notification.id, { appIconUrl: undefined }); // Clear custom image
-                    }}
+                    onClick={() => handleIconClick(icon)}
                     title={icon.name}
                   >
-                    {icon.emoji}
+                    <AppIcon
+                      src={icon.filename}
+                      alt={icon.name}
+                      size="sm"
+                    />
                   </button>
                 ))}
               </div>

@@ -1,7 +1,7 @@
 export interface Notification {
   id: string;
   appName: string;
-  appIcon: string; // emoji or icon identifier
+  appIcon: string; // app icon ID from constants
   appIconUrl?: string; // optional custom image URL
   message: string;
   timeAgo: string; // e.g., "2 min sedan", "nu"
@@ -31,7 +31,4 @@ export interface DownloadOptions {
   quality: number; // 0.1 to 1.0
 }
 
-export interface AppIconOption {
-  emoji: string;
-  name: string;
-} 
+ 

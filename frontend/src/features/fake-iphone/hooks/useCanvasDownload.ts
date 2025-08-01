@@ -18,7 +18,19 @@ export function useHtmlDownload() {
     try {
       console.log('Starting download process...', { element, options });
 
+      // Determine which element to capture
+      let targetElement = element;
       
+      if (!options.includeFrame) {
+        // For screenshot without frame, target the inner screen content
+        const screenElement = element.querySelector('[data-screen-content]') as HTMLElement;
+        if (screenElement) {
+          targetElement = screenElement;
+          console.log('Targeting screen element for frameless download');
+        } else {
+          console.warn('Screen content element not found, downloading full element');
+        }
+      }
 
       if (typeof html2canvas !== 'function') {
         throw new Error('html2canvas failed to load properly');
@@ -30,11 +42,27 @@ export function useHtmlDownload() {
       await new Promise(resolve => setTimeout(resolve, 100));
 
               // First, create a temporary clone and fix colors before html2canvas
-        const tempElement = element.cloneNode(true) as HTMLElement;
+        const tempElement = targetElement.cloneNode(true) as HTMLElement;
+        
+        // Get original dimensions before moving off-screen
+        const originalRect = targetElement.getBoundingClientRect();
+        const originalWidth = originalRect.width;
+        const originalHeight = originalRect.height;
+        
+        console.log('Target element dimensions:', { 
+          includeFrame: options.includeFrame, 
+          width: originalWidth, 
+          height: originalHeight 
+        });
+        
         document.body.appendChild(tempElement);
         tempElement.style.position = 'absolute';
         tempElement.style.left = '-9999px';
         tempElement.style.top = '-9999px';
+        
+        // Force the dimensions to match the original
+        tempElement.style.width = `${originalWidth}px`;
+        tempElement.style.height = `${originalHeight}px`;
         
         // Force all elements to use RGB colors by applying inline styles
         const allElements = tempElement.querySelectorAll('*');
@@ -71,8 +99,8 @@ export function useHtmlDownload() {
           useCORS: true,
           allowTaint: true,
           backgroundColor: null,
-          width: tempElement.offsetWidth,
-          height: tempElement.offsetHeight,
+          width: originalWidth,
+          height: originalHeight,
           logging: false,
           removeContainer: true
         });
