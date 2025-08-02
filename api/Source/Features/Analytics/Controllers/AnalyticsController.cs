@@ -18,7 +18,7 @@ public class AnalyticsController : ControllerBase
     }
 
     [HttpPost("visit")]
-    public async Task<IActionResult> RegisterVisit([FromBody] RegisterVisitRequest request)
+    public async Task<ActionResult<VisitRegistrationResult>> RegisterVisit([FromBody] RegisterVisitRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.VisitorId))
         {

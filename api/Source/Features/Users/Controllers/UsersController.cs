@@ -28,7 +28,7 @@ public class UsersController : ControllerBase
     /// Get user by ID - users can only view their own profile
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetUser(string id)
+    public async Task<ActionResult<UserResponse>> GetUser(string id)
     {
         var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (currentUserId != id)
@@ -47,7 +47,7 @@ public class UsersController : ControllerBase
     /// Get current user's profile
     /// </summary>
     [HttpGet("me")]
-    public async Task<IActionResult> GetCurrentUser()
+    public async Task<ActionResult<UserResponse>> GetCurrentUser()
     {
         var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(currentUserId))
@@ -66,7 +66,7 @@ public class UsersController : ControllerBase
     /// Get all users with pagination and search - TODO: Add admin role requirement
     /// </summary>
     [HttpGet]
-    public async Task<IActionResult> GetAllUsers(
+    public async Task<ActionResult<GetAllUsersResponse>> GetAllUsers(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] string? search = null)
@@ -92,7 +92,7 @@ public class UsersController : ControllerBase
     /// </summary>
     [HttpPost]
     [EnableRateLimiting("EmailPolicy")]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
+    public async Task<ActionResult<CreateUserResponse>> CreateUser([FromBody] CreateUserRequest request)
     {
         var command = new CreateUserCommand(request.Email, request.Password, request.FirstName, request.LastName);
         var result = await _mediator.Send(command);
@@ -107,7 +107,7 @@ public class UsersController : ControllerBase
     /// Update user information - users can only update their own profile
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserRequest request)
+    public async Task<ActionResult<UpdateUserResponse>> UpdateUser(string id, [FromBody] UpdateUserRequest request)
     {
         var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (currentUserId != id)
@@ -126,7 +126,7 @@ public class UsersController : ControllerBase
     /// Soft delete user - users can only delete their own account
     /// </summary>
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUser(string id)
+    public async Task<ActionResult<DeleteUserResponse>> DeleteUser(string id)
     {
         var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (currentUserId != id)

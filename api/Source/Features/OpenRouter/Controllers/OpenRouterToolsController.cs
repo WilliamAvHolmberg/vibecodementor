@@ -38,7 +38,7 @@ namespace Api.Features.OpenRouter.Controllers
         }
 
         [HttpGet("conversations/{conversationId}")]
-        public IActionResult GetConversation([FromRoute] string conversationId)
+        public ActionResult<List<Message>> GetConversation([FromRoute] string conversationId)
         {
             // Get conversation-specific messages and exclude system messages
             var messages = _conversationCache.GetMessages(conversationId)
@@ -54,7 +54,7 @@ namespace Api.Features.OpenRouter.Controllers
         /// Get available models from OpenRouter with caching
         /// </summary>
         [HttpGet("models")]
-        public async Task<IActionResult> GetModels()
+        public async Task<ActionResult<List<OpenRouterModel>>> GetModels()
         {
             try
             {

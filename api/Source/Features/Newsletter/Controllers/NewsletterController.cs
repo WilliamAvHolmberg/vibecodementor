@@ -27,7 +27,7 @@ public class NewsletterController : ControllerBase
     // [EnableRateLimiting("EmailPolicy")]  // 🚨 Rate limited: 3 per minute
     [ProducesResponseType<SaveEmailToNewsletterResponse>(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Subscribe([FromBody] SubscribeToNewsletterRequest request)
+    public async Task<ActionResult<SaveEmailToNewsletterResponse>> Subscribe([FromBody] SubscribeToNewsletterRequest request)
     {
         var command = new SaveEmailToNewsletterCommand(request.Email);
         var result = await _mediator.Send(command);

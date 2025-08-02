@@ -32,7 +32,7 @@ public class FilesController : ControllerBase
     [EnableRateLimiting("UploadPolicy")]  // 🚨 Rate limited: 10 per minute
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> UploadFile(IFormFile file)
+    public async Task<ActionResult<object>> UploadFile(IFormFile file)
     {
         if (file == null || file.Length == 0)
         {
@@ -72,7 +72,7 @@ public class FilesController : ControllerBase
     [EnableRateLimiting("UploadPolicy")]  // 🚨 Rate limited: 10 per minute
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> UploadImage(IFormFile file)
+    public async Task<ActionResult<object>> UploadImage(IFormFile file)
     {
         if (file == null || file.Length == 0)
         {
@@ -119,7 +119,7 @@ public class FilesController : ControllerBase
     [HttpGet("images/latest")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> GetLatestImages([FromQuery] int count = 10)
+    public async Task<ActionResult<object>> GetLatestImages([FromQuery] int count = 10)
     {
         try
         {
@@ -151,7 +151,7 @@ public class FilesController : ControllerBase
     [HttpGet("info/{*filePath}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> GetFileInfo(string filePath)
+    public async Task<ActionResult<object>> GetFileInfo(string filePath)
     {
         var exists = await _fileStorageService.FileExistsAsync(filePath);
         

@@ -39,7 +39,10 @@ import type {
   CreateTaskRequestDTO,
   CreateTaskResponseDTO,
   CreateUserRequestDTO,
+  CreateUserResponseDTO,
   CurrentUserResponseDTO,
+  DeleteUserResponseDTO,
+  GetAllUsersResponseDTO,
   GetApiChatMessagesParams,
   GetApiFilesImagesLatestParams,
   GetApiKanbanChatStreamParams,
@@ -52,8 +55,10 @@ import type {
   KanbanBoardSummaryDtoDTO,
   LoginRequestDTO,
   LoginUserResponseDTO,
+  MessageDTO,
   MoveTaskRequestDTO,
   MoveTaskResponseDTO,
+  OpenRouterModelDTO,
   PostApiFilesUploadBody,
   PostApiFilesUploadImageBody,
   ProblemDetailsDTO,
@@ -68,8 +73,11 @@ import type {
   TodaysHabitDtoDTO,
   ToggleSubtaskResponseDTO,
   UpdateUserRequestDTO,
+  UpdateUserResponseDTO,
+  UserResponseDTO,
   VerifyOtpCookieResponseDTO,
-  VerifyOtpRequestDTO
+  VerifyOtpRequestDTO,
+  VisitRegistrationResultDTO
 } from '../models';
 
 import { customApiClient } from '../client';
@@ -84,7 +92,7 @@ export const postApiAnalyticsVisit = (
 ) => {
       
       
-      return customApiClient<void>(
+      return customApiClient<VisitRegistrationResultDTO>(
       {url: `/api/Analytics/visit`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: registerVisitRequestDTO, signal
@@ -2221,7 +2229,7 @@ export const getApiOpenrouterToolsConversationsConversationId = (
 ) => {
       
       
-      return customApiClient<void>(
+      return customApiClient<MessageDTO[]>(
       {url: `/api/openrouter/tools/conversations/${conversationId}`, method: 'GET', signal
     },
       );
@@ -2303,7 +2311,7 @@ export const getApiOpenrouterToolsModels = (
 ) => {
       
       
-      return customApiClient<void>(
+      return customApiClient<OpenRouterModelDTO[]>(
       {url: `/api/openrouter/tools/models`, method: 'GET', signal
     },
       );
@@ -2468,7 +2476,7 @@ export const getApiUsersId = (
 ) => {
       
       
-      return customApiClient<void>(
+      return customApiClient<UserResponseDTO>(
       {url: `/api/Users/${id}`, method: 'GET', signal
     },
       );
@@ -2550,7 +2558,7 @@ export const putApiUsersId = (
  ) => {
       
       
-      return customApiClient<void>(
+      return customApiClient<UpdateUserResponseDTO>(
       {url: `/api/Users/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: updateUserRequestDTO
@@ -2608,7 +2616,7 @@ export const deleteApiUsersId = (
  ) => {
       
       
-      return customApiClient<void>(
+      return customApiClient<DeleteUserResponseDTO>(
       {url: `/api/Users/${id}`, method: 'DELETE'
     },
       );
@@ -2665,7 +2673,7 @@ export const getApiUsersMe = (
 ) => {
       
       
-      return customApiClient<void>(
+      return customApiClient<UserResponseDTO>(
       {url: `/api/Users/me`, method: 'GET', signal
     },
       );
@@ -2747,7 +2755,7 @@ export const getApiUsers = (
 ) => {
       
       
-      return customApiClient<void>(
+      return customApiClient<GetAllUsersResponseDTO>(
       {url: `/api/Users`, method: 'GET',
         params, signal
     },
@@ -2830,7 +2838,7 @@ export const postApiUsers = (
 ) => {
       
       
-      return customApiClient<void>(
+      return customApiClient<CreateUserResponseDTO>(
       {url: `/api/Users`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: createUserRequestDTO, signal

@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("EmailPolicy")]  // 🚨 Rate limited: 3 per minute
     [ProducesResponseType<RegisterUserResponse>(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    public async Task<ActionResult<RegisterUserResponse>> Register([FromBody] RegisterRequest request)
     {
         var command = new RegisterUserCommand(request.Email, request.Password);
         var result = await _mediator.Send(command);
@@ -51,7 +51,7 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("AuthPolicy")]  // 🚨 Rate limited: 5 per minute - Perfect for OTP!
     [ProducesResponseType<LoginUserResponse>(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    public async Task<ActionResult<LoginUserResponse>> Login([FromBody] LoginRequest request)
     {
         var command = new LoginUserCommand(request.Email, request.Password);
         var result = await _mediator.Send(command);
@@ -73,7 +73,7 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("EmailPolicy")]  // 🚨 Rate limited: 3 per minute
     [ProducesResponseType<SendOtpResponse>(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> SendOtp([FromBody] SendOtpRequest request)
+    public async Task<ActionResult<SendOtpResponse>> SendOtp([FromBody] SendOtpRequest request)
     {
         var command = new SendOtpCommand(request.Email);
         var result = await _mediator.Send(command);
@@ -95,7 +95,7 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("AuthPolicy")]  // 🚨 Rate limited: 5 per minute
     [ProducesResponseType<VerifyOtpCookieResponse>(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequest request)
+    public async Task<ActionResult<VerifyOtpCookieResponse>> VerifyOtp([FromBody] VerifyOtpRequest request)
     {
         var command = new VerifyOtpCommand(request.Email, request.OtpCode);
         var result = await _mediator.Send(command);
@@ -133,7 +133,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType<CurrentUserResponse>(200)]
     [ProducesResponseType(401)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> GetMe()
+    public async Task<ActionResult<CurrentUserResponse>> GetMe()
     {
         var query = new GetCurrentUserQuery(User);
         var result = await _mediator.Send(query);
@@ -152,7 +152,7 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpPost("logout")]
     [ProducesResponseType(200)]
-    public IActionResult Logout()
+    public ActionResult<object> Logout()
     {
         // Clear the authentication cookie
         Response.Cookies.Delete("auth-token", new CookieOptions
