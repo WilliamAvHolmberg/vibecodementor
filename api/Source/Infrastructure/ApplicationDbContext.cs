@@ -7,6 +7,7 @@ using Source.Features.Files.Models;
 using Source.Features.Newsletter.Models;
 using Source.Features.Kanban.Models;
 using api.Source.Infrastructure.Services.BackgroundJobs;
+using Source.Features.Habits.Models;
 
 namespace Source.Infrastructure;
 
@@ -25,6 +26,10 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<KanbanTask> KanbanTasks { get; set; }
     public DbSet<KanbanChatSession> KanbanChatSessions { get; set; }
     public DbSet<KanbanChatMessage> KanbanChatMessages { get; set; }
+
+    // Habits entities
+    public DbSet<Habit> Habits { get; set; }
+    public DbSet<HabitCheckIn> HabitCheckIns { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {

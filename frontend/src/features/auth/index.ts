@@ -9,6 +9,7 @@ export { useAuth as useAuthHook } from './use-auth';
 export { EmailInput } from './email-input';
 export { OtpInput } from './otp-input';
 export { AuthFlow } from './auth-flow';
+export { AuthGuard } from './auth-guard';
 
 // Types
 export type { User, AuthState, AuthActions, AuthContextType } from './auth-context'; 

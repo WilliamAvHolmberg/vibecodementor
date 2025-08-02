@@ -28,10 +28,14 @@ import type {
   AddSubtaskRequestDTO,
   AddSubtaskResponseDTO,
   ChatMessageDtoDTO,
+  CheckInHabitCommandDTO,
+  CheckInHabitResponseDTO,
   CreateBoardRequestDTO,
   CreateBoardResponseDTO,
   CreateChatSessionRequestDTO,
   CreateChatSessionResponseDTO,
+  CreateHabitCommandDTO,
+  CreateHabitResponseDTO,
   CreateTaskRequestDTO,
   CreateTaskResponseDTO,
   CreateUserRequestDTO,
@@ -56,10 +60,12 @@ import type {
   RegisterRequestDTO,
   RegisterUserResponseDTO,
   RegisterVisitRequestDTO,
+  RemoveHabitResponseDTO,
   SaveEmailToNewsletterResponseDTO,
   SendOtpRequestDTO,
   SendOtpResponseDTO,
   SubscribeToNewsletterRequestDTO,
+  TodaysHabitDtoDTO,
   ToggleSubtaskResponseDTO,
   UpdateUserRequestDTO,
   VerifyOtpCookieResponseDTO,
@@ -1044,6 +1050,262 @@ export function useGetApiFilesInfoFilePath<TData = Awaited<ReturnType<typeof get
 
 
 
+export const getApiHabitsToday = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<TodaysHabitDtoDTO[]>(
+      {url: `/api/Habits/today`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetApiHabitsTodayQueryKey = () => {
+    return [`/api/Habits/today`] as const;
+    }
+
+    
+export const getGetApiHabitsTodayQueryOptions = <TData = Awaited<ReturnType<typeof getApiHabitsToday>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHabitsToday>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiHabitsTodayQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiHabitsToday>>> = ({ signal }) => getApiHabitsToday(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiHabitsToday>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiHabitsTodayQueryResult = NonNullable<Awaited<ReturnType<typeof getApiHabitsToday>>>
+export type GetApiHabitsTodayQueryError = ErrorType<unknown>
+
+
+export function useGetApiHabitsToday<TData = Awaited<ReturnType<typeof getApiHabitsToday>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHabitsToday>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiHabitsToday>>,
+          TError,
+          Awaited<ReturnType<typeof getApiHabitsToday>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiHabitsToday<TData = Awaited<ReturnType<typeof getApiHabitsToday>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHabitsToday>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiHabitsToday>>,
+          TError,
+          Awaited<ReturnType<typeof getApiHabitsToday>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiHabitsToday<TData = Awaited<ReturnType<typeof getApiHabitsToday>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHabitsToday>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiHabitsToday<TData = Awaited<ReturnType<typeof getApiHabitsToday>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHabitsToday>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiHabitsTodayQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const postApiHabitsCheckin = (
+    checkInHabitCommandDTO: CheckInHabitCommandDTO,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<CheckInHabitResponseDTO>(
+      {url: `/api/Habits/checkin`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: checkInHabitCommandDTO, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiHabitsCheckinMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiHabitsCheckin>>, TError,{data: CheckInHabitCommandDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiHabitsCheckin>>, TError,{data: CheckInHabitCommandDTO}, TContext> => {
+
+const mutationKey = ['postApiHabitsCheckin'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiHabitsCheckin>>, {data: CheckInHabitCommandDTO}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiHabitsCheckin(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiHabitsCheckinMutationResult = NonNullable<Awaited<ReturnType<typeof postApiHabitsCheckin>>>
+    export type PostApiHabitsCheckinMutationBody = CheckInHabitCommandDTO
+    export type PostApiHabitsCheckinMutationError = ErrorType<unknown>
+
+    export const usePostApiHabitsCheckin = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiHabitsCheckin>>, TError,{data: CheckInHabitCommandDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiHabitsCheckin>>,
+        TError,
+        {data: CheckInHabitCommandDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiHabitsCheckinMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const postApiHabits = (
+    createHabitCommandDTO: CreateHabitCommandDTO,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<CreateHabitResponseDTO>(
+      {url: `/api/Habits`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createHabitCommandDTO, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiHabitsMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiHabits>>, TError,{data: CreateHabitCommandDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiHabits>>, TError,{data: CreateHabitCommandDTO}, TContext> => {
+
+const mutationKey = ['postApiHabits'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiHabits>>, {data: CreateHabitCommandDTO}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiHabits(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiHabitsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiHabits>>>
+    export type PostApiHabitsMutationBody = CreateHabitCommandDTO
+    export type PostApiHabitsMutationError = ErrorType<unknown>
+
+    export const usePostApiHabits = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiHabits>>, TError,{data: CreateHabitCommandDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiHabits>>,
+        TError,
+        {data: CreateHabitCommandDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiHabitsMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const deleteApiHabitsHabitId = (
+    habitId: string,
+ ) => {
+      
+      
+      return customApiClient<RemoveHabitResponseDTO>(
+      {url: `/api/Habits/${habitId}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteApiHabitsHabitIdMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiHabitsHabitId>>, TError,{habitId: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiHabitsHabitId>>, TError,{habitId: string}, TContext> => {
+
+const mutationKey = ['deleteApiHabitsHabitId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiHabitsHabitId>>, {habitId: string}> = (props) => {
+          const {habitId} = props ?? {};
+
+          return  deleteApiHabitsHabitId(habitId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteApiHabitsHabitIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiHabitsHabitId>>>
+    
+    export type DeleteApiHabitsHabitIdMutationError = ErrorType<unknown>
+
+    export const useDeleteApiHabitsHabitId = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiHabitsHabitId>>, TError,{habitId: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteApiHabitsHabitId>>,
+        TError,
+        {habitId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteApiHabitsHabitIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
 export const getApiKanbanBoards = (
     
  signal?: AbortSignal
