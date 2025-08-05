@@ -1,6 +1,7 @@
 using Source.Infrastructure.Services.Email;
 using Source.Infrastructure.Services.FileStorage;
 using Source.Infrastructure.Services.RealTime;
+using Source.Features.ATA.Services;
 using Resend;
 
 namespace Source.Infrastructure.Extensions;
@@ -47,6 +48,10 @@ public static class ServicesExtensions
                 services.AddScoped<IFileStorageService, LocalFileStorageService>();
                 break;
         }
+
+        // ATA Services
+        services.AddScoped<ATANotificationService>();
+        services.AddScoped<ATATimelineService>();
 
         return services;
     }

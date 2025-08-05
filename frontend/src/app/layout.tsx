@@ -86,7 +86,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <Providers>
-          <AppHeader />
           {children}
         </Providers>
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />

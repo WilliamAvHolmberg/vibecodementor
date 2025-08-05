@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Source.Infrastructure;
@@ -11,9 +12,11 @@ using Source.Infrastructure;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250802185115_CreateATAFeature")]
+    partial class CreateATAFeature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,44 +272,6 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ATARequests");
-                });
-
-            modelBuilder.Entity("Source.Features.ATA.Models.ATAStatusHistory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ATARequestId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ChangedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ChangedByName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("Comment")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SubmissionRound")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ATARequestId");
-
-                    b.ToTable("ATAStatusHistory");
                 });
 
             modelBuilder.Entity("Source.Features.Analytics.Models.DailyVisitStats", b =>
@@ -1030,17 +995,6 @@ namespace api.Migrations
                     b.Navigation("ATARequest");
                 });
 
-            modelBuilder.Entity("Source.Features.ATA.Models.ATAStatusHistory", b =>
-                {
-                    b.HasOne("Source.Features.ATA.Models.ATARequest", "ATARequest")
-                        .WithMany("StatusHistory")
-                        .HasForeignKey("ATARequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ATARequest");
-                });
-
             modelBuilder.Entity("Source.Features.Habits.Models.HabitCheckIn", b =>
                 {
                     b.HasOne("Source.Features.Habits.Models.Habit", "Habit")
@@ -1109,8 +1063,6 @@ namespace api.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("LineItems");
-
-                    b.Navigation("StatusHistory");
                 });
 
             modelBuilder.Entity("Source.Features.Kanban.Models.KanbanBoard", b =>

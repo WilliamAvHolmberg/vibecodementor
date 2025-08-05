@@ -25,15 +25,23 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ATADetailsResponseDTO,
+  ATAForApprovalResponseDTO,
+  ATARequestSummaryDTO,
   AddSubtaskRequestDTO,
   AddSubtaskResponseDTO,
+  ApproveATARequestDtoDTO,
+  ApproveATARequestResponseDTO,
   ChatMessageDtoDTO,
   CheckInHabitCommandDTO,
   CheckInHabitResponseDTO,
+  CreateATARequestDtoDTO,
+  CreateATARequestResponseDTO,
   CreateBoardRequestDTO,
   CreateBoardResponseDTO,
   CreateChatSessionRequestDTO,
   CreateChatSessionResponseDTO,
+  CreateDraftATAResponseDTO,
   CreateHabitCommandDTO,
   CreateHabitResponseDTO,
   CreateTaskRequestDTO,
@@ -65,13 +73,20 @@ import type {
   RegisterRequestDTO,
   RegisterUserResponseDTO,
   RegisterVisitRequestDTO,
+  RejectATARequestDtoDTO,
+  RejectATARequestResponseDTO,
   RemoveHabitResponseDTO,
   SaveEmailToNewsletterResponseDTO,
   SendOtpRequestDTO,
   SendOtpResponseDTO,
+  SubmitATARequestResponseDTO,
   SubscribeToNewsletterRequestDTO,
   TodaysHabitDtoDTO,
   ToggleSubtaskResponseDTO,
+  UpdateATALineItemsDtoDTO,
+  UpdateATALineItemsResponseDTO,
+  UpdateATARequestDtoDTO,
+  UpdateATARequestResponseDTO,
   UpdateUserRequestDTO,
   UpdateUserResponseDTO,
   UserResponseDTO,
@@ -227,6 +242,663 @@ export function useGet<TData = Awaited<ReturnType<typeof get>>, TError = ErrorTy
 
 
 
+export const postApiATA = (
+    createATARequestDtoDTO: CreateATARequestDtoDTO,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<CreateATARequestResponseDTO>(
+      {url: `/api/ATA`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createATARequestDtoDTO, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiATAMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiATA>>, TError,{data: CreateATARequestDtoDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiATA>>, TError,{data: CreateATARequestDtoDTO}, TContext> => {
+
+const mutationKey = ['postApiATA'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiATA>>, {data: CreateATARequestDtoDTO}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiATA(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiATAMutationResult = NonNullable<Awaited<ReturnType<typeof postApiATA>>>
+    export type PostApiATAMutationBody = CreateATARequestDtoDTO
+    export type PostApiATAMutationError = ErrorType<unknown>
+
+    export const usePostApiATA = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiATA>>, TError,{data: CreateATARequestDtoDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiATA>>,
+        TError,
+        {data: CreateATARequestDtoDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiATAMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const getApiATA = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<ATARequestSummaryDTO[]>(
+      {url: `/api/ATA`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetApiATAQueryKey = () => {
+    return [`/api/ATA`] as const;
+    }
+
+    
+export const getGetApiATAQueryOptions = <TData = Awaited<ReturnType<typeof getApiATA>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATA>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiATAQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiATA>>> = ({ signal }) => getApiATA(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiATA>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiATAQueryResult = NonNullable<Awaited<ReturnType<typeof getApiATA>>>
+export type GetApiATAQueryError = ErrorType<unknown>
+
+
+export function useGetApiATA<TData = Awaited<ReturnType<typeof getApiATA>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATA>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiATA>>,
+          TError,
+          Awaited<ReturnType<typeof getApiATA>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiATA<TData = Awaited<ReturnType<typeof getApiATA>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATA>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiATA>>,
+          TError,
+          Awaited<ReturnType<typeof getApiATA>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiATA<TData = Awaited<ReturnType<typeof getApiATA>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATA>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiATA<TData = Awaited<ReturnType<typeof getApiATA>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATA>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiATAQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const postApiATADraft = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<CreateDraftATAResponseDTO>(
+      {url: `/api/ATA/draft`, method: 'POST', signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiATADraftMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiATADraft>>, TError,void, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiATADraft>>, TError,void, TContext> => {
+
+const mutationKey = ['postApiATADraft'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiATADraft>>, void> = () => {
+          
+
+          return  postApiATADraft()
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiATADraftMutationResult = NonNullable<Awaited<ReturnType<typeof postApiATADraft>>>
+    
+    export type PostApiATADraftMutationError = ErrorType<unknown>
+
+    export const usePostApiATADraft = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiATADraft>>, TError,void, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiATADraft>>,
+        TError,
+        void,
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiATADraftMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const patchApiATAId = (
+    id: string,
+    updateATARequestDtoDTO: UpdateATARequestDtoDTO,
+ ) => {
+      
+      
+      return customApiClient<UpdateATARequestResponseDTO>(
+      {url: `/api/ATA/${id}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateATARequestDtoDTO
+    },
+      );
+    }
+  
+
+
+export const getPatchApiATAIdMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiATAId>>, TError,{id: string;data: UpdateATARequestDtoDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiATAId>>, TError,{id: string;data: UpdateATARequestDtoDTO}, TContext> => {
+
+const mutationKey = ['patchApiATAId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiATAId>>, {id: string;data: UpdateATARequestDtoDTO}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  patchApiATAId(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchApiATAIdMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiATAId>>>
+    export type PatchApiATAIdMutationBody = UpdateATARequestDtoDTO
+    export type PatchApiATAIdMutationError = ErrorType<unknown>
+
+    export const usePatchApiATAId = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiATAId>>, TError,{id: string;data: UpdateATARequestDtoDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchApiATAId>>,
+        TError,
+        {id: string;data: UpdateATARequestDtoDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPatchApiATAIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const getApiATAId = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<ATADetailsResponseDTO>(
+      {url: `/api/ATA/${id}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetApiATAIdQueryKey = (id: string,) => {
+    return [`/api/ATA/${id}`] as const;
+    }
+
+    
+export const getGetApiATAIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiATAId>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATAId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiATAIdQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiATAId>>> = ({ signal }) => getApiATAId(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiATAId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiATAIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiATAId>>>
+export type GetApiATAIdQueryError = ErrorType<unknown>
+
+
+export function useGetApiATAId<TData = Awaited<ReturnType<typeof getApiATAId>>, TError = ErrorType<unknown>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATAId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiATAId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiATAId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiATAId<TData = Awaited<ReturnType<typeof getApiATAId>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATAId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiATAId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiATAId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiATAId<TData = Awaited<ReturnType<typeof getApiATAId>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATAId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiATAId<TData = Awaited<ReturnType<typeof getApiATAId>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATAId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiATAIdQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const patchApiATAIdLineitems = (
+    id: string,
+    updateATALineItemsDtoDTO: UpdateATALineItemsDtoDTO,
+ ) => {
+      
+      
+      return customApiClient<UpdateATALineItemsResponseDTO>(
+      {url: `/api/ATA/${id}/lineitems`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateATALineItemsDtoDTO
+    },
+      );
+    }
+  
+
+
+export const getPatchApiATAIdLineitemsMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiATAIdLineitems>>, TError,{id: string;data: UpdateATALineItemsDtoDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiATAIdLineitems>>, TError,{id: string;data: UpdateATALineItemsDtoDTO}, TContext> => {
+
+const mutationKey = ['patchApiATAIdLineitems'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiATAIdLineitems>>, {id: string;data: UpdateATALineItemsDtoDTO}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  patchApiATAIdLineitems(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchApiATAIdLineitemsMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiATAIdLineitems>>>
+    export type PatchApiATAIdLineitemsMutationBody = UpdateATALineItemsDtoDTO
+    export type PatchApiATAIdLineitemsMutationError = ErrorType<unknown>
+
+    export const usePatchApiATAIdLineitems = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiATAIdLineitems>>, TError,{id: string;data: UpdateATALineItemsDtoDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchApiATAIdLineitems>>,
+        TError,
+        {id: string;data: UpdateATALineItemsDtoDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPatchApiATAIdLineitemsMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const postApiATAIdSubmit = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<SubmitATARequestResponseDTO>(
+      {url: `/api/ATA/${id}/submit`, method: 'POST', signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiATAIdSubmitMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiATAIdSubmit>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiATAIdSubmit>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['postApiATAIdSubmit'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiATAIdSubmit>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  postApiATAIdSubmit(id,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiATAIdSubmitMutationResult = NonNullable<Awaited<ReturnType<typeof postApiATAIdSubmit>>>
+    
+    export type PostApiATAIdSubmitMutationError = ErrorType<unknown>
+
+    export const usePostApiATAIdSubmit = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiATAIdSubmit>>, TError,{id: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiATAIdSubmit>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiATAIdSubmitMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const getApiATAApproveId = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<ATAForApprovalResponseDTO>(
+      {url: `/api/ATA/approve/${id}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetApiATAApproveIdQueryKey = (id: string,) => {
+    return [`/api/ATA/approve/${id}`] as const;
+    }
+
+    
+export const getGetApiATAApproveIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiATAApproveId>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATAApproveId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiATAApproveIdQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiATAApproveId>>> = ({ signal }) => getApiATAApproveId(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  staleTime: 10000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiATAApproveId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiATAApproveIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiATAApproveId>>>
+export type GetApiATAApproveIdQueryError = ErrorType<unknown>
+
+
+export function useGetApiATAApproveId<TData = Awaited<ReturnType<typeof getApiATAApproveId>>, TError = ErrorType<unknown>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATAApproveId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiATAApproveId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiATAApproveId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiATAApproveId<TData = Awaited<ReturnType<typeof getApiATAApproveId>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATAApproveId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiATAApproveId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiATAApproveId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiATAApproveId<TData = Awaited<ReturnType<typeof getApiATAApproveId>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATAApproveId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiATAApproveId<TData = Awaited<ReturnType<typeof getApiATAApproveId>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiATAApproveId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiATAApproveIdQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const postApiATAApproveId = (
+    id: string,
+    approveATARequestDtoDTO: ApproveATARequestDtoDTO,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<ApproveATARequestResponseDTO>(
+      {url: `/api/ATA/approve/${id}`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: approveATARequestDtoDTO, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiATAApproveIdMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiATAApproveId>>, TError,{id: string;data: ApproveATARequestDtoDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiATAApproveId>>, TError,{id: string;data: ApproveATARequestDtoDTO}, TContext> => {
+
+const mutationKey = ['postApiATAApproveId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiATAApproveId>>, {id: string;data: ApproveATARequestDtoDTO}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiATAApproveId(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiATAApproveIdMutationResult = NonNullable<Awaited<ReturnType<typeof postApiATAApproveId>>>
+    export type PostApiATAApproveIdMutationBody = ApproveATARequestDtoDTO
+    export type PostApiATAApproveIdMutationError = ErrorType<unknown>
+
+    export const usePostApiATAApproveId = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiATAApproveId>>, TError,{id: string;data: ApproveATARequestDtoDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiATAApproveId>>,
+        TError,
+        {id: string;data: ApproveATARequestDtoDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiATAApproveIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+export const postApiATARejectId = (
+    id: string,
+    rejectATARequestDtoDTO: RejectATARequestDtoDTO,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customApiClient<RejectATARequestResponseDTO>(
+      {url: `/api/ATA/reject/${id}`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: rejectATARequestDtoDTO, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiATARejectIdMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiATARejectId>>, TError,{id: string;data: RejectATARequestDtoDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiATARejectId>>, TError,{id: string;data: RejectATARequestDtoDTO}, TContext> => {
+
+const mutationKey = ['postApiATARejectId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiATARejectId>>, {id: string;data: RejectATARequestDtoDTO}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiATARejectId(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiATARejectIdMutationResult = NonNullable<Awaited<ReturnType<typeof postApiATARejectId>>>
+    export type PostApiATARejectIdMutationBody = RejectATARequestDtoDTO
+    export type PostApiATARejectIdMutationError = ErrorType<unknown>
+
+    export const usePostApiATARejectId = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiATARejectId>>, TError,{id: string;data: RejectATARequestDtoDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiATARejectId>>,
+        TError,
+        {id: string;data: RejectATARequestDtoDTO},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiATARejectIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
 export const postApiAuthRegister = (
     registerRequestDTO: RegisterRequestDTO,
  signal?: AbortSignal

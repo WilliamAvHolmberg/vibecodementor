@@ -8,6 +8,7 @@ using Source.Features.Newsletter.Models;
 using Source.Features.Kanban.Models;
 using api.Source.Infrastructure.Services.BackgroundJobs;
 using Source.Features.Habits.Models;
+using Source.Features.ATA.Models;
 
 namespace Source.Infrastructure;
 
@@ -30,6 +31,12 @@ public class ApplicationDbContext : IdentityDbContext<User>
     // Habits entities
     public DbSet<Habit> Habits { get; set; }
     public DbSet<HabitCheckIn> HabitCheckIns { get; set; }
+
+    // ATA entities
+    public DbSet<ATARequest> ATARequests { get; set; }
+    public DbSet<ATALineItem> ATALineItems { get; set; }
+    public DbSet<ATAComment> ATAComments { get; set; }
+    public DbSet<ATAStatusHistory> ATAStatusHistory { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
