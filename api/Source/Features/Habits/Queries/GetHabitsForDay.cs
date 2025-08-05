@@ -5,9 +5,9 @@ using Source.Shared.Results;
 
 namespace Source.Features.Habits.Queries;
 
-public record GetTodaysHabitsQuery(string UserId) : IQuery<Result<List<TodaysHabitDto>>>;
+public record GetHabitsForDayQuery(string UserId, DateOnly Date) : IQuery<Result<List<HabitForDayDto>>>;
 
-public record TodaysHabitDto(
+public record HabitForDayDto(
     Guid HabitId,
     string Name,
     string? Description,
@@ -16,18 +16,18 @@ public record TodaysHabitDto(
     DateTime? CompletedAt
 );
 
-public class GetTodaysHabitsHandler : IQueryHandler<GetTodaysHabitsQuery, Result<List<TodaysHabitDto>>>
+public class GetHabitsForDayHandler : IQueryHandler<GetHabitsForDayQuery, Result<List<HabitForDayDto>>>
 {
     private readonly ApplicationDbContext _context;
 
-    public GetTodaysHabitsHandler(ApplicationDbContext context)
+    public GetHabitsForDayHandler(ApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<Result<List<TodaysHabitDto>>> Handle(GetTodaysHabitsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<HabitForDayDto>>> Handle(GetHabitsForDayQuery request, CancellationToken cancellationToken)
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var targetDate = request.Date;
 
         // Simple query 1: Get user's active habits
         var habits = await _context.Habits
@@ -35,16 +35,16 @@ public class GetTodaysHabitsHandler : IQueryHandler<GetTodaysHabitsQuery, Result
             .OrderBy(h => h.Name)
             .ToListAsync(cancellationToken);
 
-        // Simple query 2: Get today's check-ins for this user
-        var todaysCheckIns = await _context.HabitCheckIns
-            .Where(hc => hc.UserId == request.UserId && hc.Date == today)
+        // Simple query 2: Get check-ins for the target date
+        var dateCheckIns = await _context.HabitCheckIns
+            .Where(hc => hc.UserId == request.UserId && hc.Date == targetDate)
             .ToListAsync(cancellationToken);
 
         // Join in memory (fast with small datasets)
-        var todaysHabits = habits.Select(habit =>
+        var habitsForDay = habits.Select(habit =>
         {
-            var checkIn = todaysCheckIns.FirstOrDefault(c => c.HabitId == habit.Id);
-            return new TodaysHabitDto(
+            var checkIn = dateCheckIns.FirstOrDefault(c => c.HabitId == habit.Id);
+            return new HabitForDayDto(
                 habit.Id,
                 habit.Name,
                 habit.Description,
@@ -54,6 +54,6 @@ public class GetTodaysHabitsHandler : IQueryHandler<GetTodaysHabitsQuery, Result
             );
         }).ToList();
 
-        return Result.Success(todaysHabits);
+        return Result.Success(habitsForDay);
     }
 } 

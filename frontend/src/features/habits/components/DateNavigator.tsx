@@ -1,16 +1,12 @@
-import { useHabits } from '../hooks/use-habits';
-import { useHabitForm } from '../hooks/use-habit-form';
 import { useDateNavigation } from '../hooks/use-date-navigation';
 
 interface Props {
-  habits: ReturnType<typeof useHabits>;
-  form: ReturnType<typeof useHabitForm>;
   dateNav: ReturnType<typeof useDateNavigation>;
 }
 
-export function HabitsHeader({ habits, form, dateNav }: Props) {
+export function DateNavigator({ dateNav }: Props) {
   return (
-    <div className="flex justify-between items-center mb-6">
+    <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-2">
         <button
           onClick={dateNav.goToPreviousDay}
@@ -36,26 +32,15 @@ export function HabitsHeader({ habits, form, dateNav }: Props) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
-
       </div>
 
-      {/* Show "Today" button when not today, "Add habit" when today */}
-      {!dateNav.isToday ? (
+      {!dateNav.isToday && (
         <button
           onClick={dateNav.goToToday}
-          className="text-sm text-gray-600 hover:text-gray-800 font-medium transition-colors cursor-pointer"
+          className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
         >
-          View Today
+          Today
         </button>
-      ) : (
-        habits.hasData && !form.isVisible && (
-          <button
-            onClick={form.open}
-            className="text-gray-600 hover:text-gray-800 text-sm flex items-center gap-2 transition-colors cursor-pointer"
-          >
-            <span className="text-lg">+</span> Add habit
-          </button>
-        )
       )}
     </div>
   );

@@ -3,6 +3,7 @@ import { useHabitForm } from '../hooks/use-habit-form';
 import { useHabitAnimations } from '../hooks/use-habit-animations';
 import { useHabitMenu } from '../hooks/use-habit-menu';
 import { useHabitCheckin } from '../hooks/use-habit-checkin';
+import { useDateNavigation } from '../hooks/use-date-navigation';
 import { HabitsHeader } from './HabitsHeader';
 import { HabitCard } from './HabitCard';
 import { HabitsEmptyState } from './HabitsEmptyState';
@@ -13,12 +14,13 @@ interface Props {
   animations: ReturnType<typeof useHabitAnimations>;
   menu: ReturnType<typeof useHabitMenu>;
   checkin: ReturnType<typeof useHabitCheckin>;
+  dateNav: ReturnType<typeof useDateNavigation>;
 }
 
-export function HabitsList({ habits, form, animations, menu, checkin }: Props) {
+export function HabitsList({ habits, form, animations, menu, checkin, dateNav }: Props) {
   return (
     <div>
-      <HabitsHeader habits={habits} form={form} />
+      <HabitsHeader habits={habits} form={form} dateNav={dateNav} />
       
       {habits.data && habits.data.length > 0 ? (
         <div className="space-y-3">

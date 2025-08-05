@@ -19,20 +19,32 @@ public class HabitsController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("today")]
-    public async Task<ActionResult<List<TodaysHabitDto>>> GetTodaysHabits()
+    [HttpGet]
+    public async Task<ActionResult<List<HabitForDayDto>>> GetHabitsForDay([FromQuery] string? date = null)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
-        var query = new GetTodaysHabitsQuery(userId);
+        // Default to today if no date provided (backward compatibility)
+        var targetDate = string.IsNullOrEmpty(date) 
+            ? DateOnly.FromDateTime(DateTime.UtcNow)
+            : DateOnly.Parse(date);
+
+        var query = new GetHabitsForDayQuery(userId, targetDate);
         var result = await _mediator.Send(query);
 
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Error });
 
         return Ok(result.Value);
+    }
+
+    [HttpGet("today")]
+    public async Task<ActionResult<List<HabitForDayDto>>> GetTodaysHabits()
+    {
+        // Keep this endpoint for backward compatibility
+        return await GetHabitsForDay();
     }
 
     [HttpPost("checkin")]
@@ -64,7 +76,7 @@ public class HabitsController : ControllerBase
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Error });
 
-        return CreatedAtAction(nameof(GetTodaysHabits), result.Value);
+        return CreatedAtAction(nameof(GetHabitsForDay), result.Value);
     }
 
     [HttpDelete("{habitId}")]

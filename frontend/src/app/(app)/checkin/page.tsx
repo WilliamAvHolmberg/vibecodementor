@@ -7,6 +7,7 @@ import {
   useHabitAnimations, 
   useHabitMenu, 
   useHabitCheckin,
+  useDateNavigation,
   HabitCreateForm,
   HabitsList
 } from '@/features/habits';
@@ -27,7 +28,8 @@ const CheckinPageContent = dynamic(() => Promise.resolve(CheckinPageContentCompo
 
 function CheckinPageContentComponent() {
   // Clean hook declarations
-  const habits = useHabits();
+  const dateNav = useDateNavigation();
+  const habits = useHabits(dateNav.apiDateString);
   const form = useHabitForm();
   const animations = useHabitAnimations();
   const menu = useHabitMenu();
@@ -38,15 +40,20 @@ function CheckinPageContentComponent() {
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-8 text-gray-900">Daily Check-in</h1>
+      <h1 className="text-2xl font-semibold mb-8 text-gray-900">
+        {dateNav.isToday ? 'Daily Check-in' : 'Habits History'}
+      </h1>
       
-      <HabitCreateForm habits={habits} form={form} />
+      {/* Only show create form on today */}
+      {dateNav.isToday && <HabitCreateForm habits={habits} form={form} />}
+      
       <HabitsList 
         habits={habits}
         form={form}
         animations={animations}
         menu={menu}
         checkin={checkin}
+        dateNav={dateNav}
       />
     </div>
   );

@@ -1,23 +1,31 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { 
+  useGetApiHabits,
   useGetApiHabitsToday, 
   usePostApiHabits, 
   usePostApiHabitsCheckin, 
   useDeleteApiHabitsHabitId,
+  getGetApiHabitsQueryKey,
   getGetApiHabitsTodayQueryKey 
 } from '@/api/hooks/api';
 
-export function useHabits() {
+export function useHabits(dateString?: string) {
   const queryClient = useQueryClient();
 
-  // Get today's habits
-  const habitsQuery = useGetApiHabitsToday();
+  // Get habits for specified date (or today if not specified)
+  const habitsQuery = dateString 
+    ? useGetApiHabits({ date: dateString })
+    : useGetApiHabitsToday();
   
   // Create habit mutation
   const createHabitMutation = usePostApiHabits({
     mutation: {
       onSuccess: () => {
+        // Invalidate both queries to ensure data consistency
         queryClient.invalidateQueries({ queryKey: getGetApiHabitsTodayQueryKey() });
+        if (dateString) {
+          queryClient.invalidateQueries({ queryKey: getGetApiHabitsQueryKey({ date: dateString }) });
+        }
       }
     }
   }, queryClient);
@@ -26,7 +34,11 @@ export function useHabits() {
   const checkinMutation = usePostApiHabitsCheckin({
     mutation: {
       onSuccess: () => {
+        // Invalidate both queries to ensure data consistency
         queryClient.invalidateQueries({ queryKey: getGetApiHabitsTodayQueryKey() });
+        if (dateString) {
+          queryClient.invalidateQueries({ queryKey: getGetApiHabitsQueryKey({ date: dateString }) });
+        }
       }
     }
   }, queryClient);
@@ -35,7 +47,11 @@ export function useHabits() {
   const deleteHabitMutation = useDeleteApiHabitsHabitId({
     mutation: {
       onSuccess: () => {
+        // Invalidate both queries to ensure data consistency
         queryClient.invalidateQueries({ queryKey: getGetApiHabitsTodayQueryKey() });
+        if (dateString) {
+          queryClient.invalidateQueries({ queryKey: getGetApiHabitsQueryKey({ date: dateString }) });
+        }
       }
     }
   }, queryClient);
