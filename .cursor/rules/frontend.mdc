@@ -54,16 +54,74 @@ import { useUsers } from '@/features/users'; // ✅ Cross-feature OK
 ### Components
 ```typescript
 export function Component({ prop }: Props) {
-  // Hooks first
-  const { data, isLoading } = useHook();
+  // Hooks first - use namespaced, not destructured
+  const data = useData();
+  const form = useForm();
   
   // Event handlers
-  const handleClick = () => {};
+  const handleClick = () => data.refresh();
   
   // Render
   return <div>{content}</div>;
 }
 ```
+
+### Hook Usage - CRITICAL PATTERN
+**Use namespaced hooks, NOT destructuring for cleaner code:**
+
+```typescript
+// ❌ BAD: Destructuring chaos
+const { data, isLoading, error, hasData, create, update, delete: deleteItem, isCreating, isUpdating, isDeleting } = useItems();
+const { name, setName, description, setDescription, isVisible, open, close, submit } = useForm();
+
+// ✅ GOOD: Clean namespaced
+const items = useItems();
+const form = useForm();
+
+// Usage becomes crystal clear:
+<button onClick={items.create} disabled={items.isCreating}>
+  {items.isCreating ? 'Creating...' : 'Create'}
+</button>
+<input value={form.name} onChange={form.setName} />
+```
+
+**Benefits:**
+- **5 lines instead of 20+** - massive reduction in component noise
+- **Clear origins** - `items.create()` vs mystery `create()` function
+- **Better IntelliSense** - type `items.` to see all available methods
+- **No naming conflicts** - multiple hooks can have `isLoading`
+- **Easier refactoring** - hook API changes don't break destructuring
+
+### Code as Poetry
+**Write code that reads like poetry - simple, clear, purposeful:**
+
+```typescript
+function MyComponent() {
+  // Clean setup - like verses in a poem
+  const data = useData();
+  const form = useForm();
+  const animations = useAnimations();
+
+  // Guard clauses - clear and direct
+  if (data.isLoading) return <Loading />;
+  if (data.error) return <Error />;
+
+  // Pure composition - every line has purpose
+  return (
+    <div>
+      <Header />
+      <CreateForm data={data} form={form} />
+      <ItemsList data={data} animations={animations} />
+    </div>
+  );
+}
+```
+
+**Poetry Principles:**
+- **Rhythm** - Setup → Guard → Compose (natural flow)
+- **Clarity** - Every variable name tells its story
+- **Purpose** - No line exists without reason
+- **Simplicity** - Complex is the enemy of readable
 
 ### API Hook Wrapping
 ```typescript

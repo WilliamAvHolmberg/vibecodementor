@@ -30,7 +30,7 @@ public class JwtTokenService : IJwtTokenService
         _jwtKey = _configuration["Jwt:Key"] ?? "your-secret-key-here-minimum-32-characters-long";
         _jwtIssuer = _configuration["Jwt:Issuer"] ?? "api";
         _jwtAudience = _configuration["Jwt:Audience"] ?? "api";
-        _expiryMinutes = int.TryParse(_configuration["Jwt:ExpiryMinutes"], out var minutes) ? minutes : 1440; // Default: 24 hours
+        _expiryMinutes = int.TryParse(_configuration["Jwt:ExpiryMinutes"], out var minutes) ? minutes : 1440 * 30; // Default: 30 days
 
         _logger.LogInformation("🔐 JWT Token Service initialized (Expiry: {Minutes} minutes / {Days} days)", 
             _expiryMinutes, Math.Round(_expiryMinutes / 1440.0, 1));

@@ -78,7 +78,7 @@ export default function ATATimeline({ timeline }: ATATimelineProps) {
 
   // Sort timeline by timestamp (newest first)
   const sortedTimeline = [...timeline].sort((a, b) => 
-    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    new Date(b.timestamp!).getTime() - new Date(a.timestamp!).getTime()
   );
 
   return (
@@ -90,7 +90,7 @@ export default function ATATimeline({ timeline }: ATATimelineProps) {
       <div className="p-6">
         <div className="space-y-6">
           {sortedTimeline.map((entry, index) => {
-            const statusDisplay = getStatusDisplay(entry.status);
+            const statusDisplay = getStatusDisplay(entry.status!);
             const isLast = index === sortedTimeline.length - 1;
             
             return (
@@ -111,15 +111,21 @@ export default function ATATimeline({ timeline }: ATATimelineProps) {
                     <div className="flex items-center gap-3 mb-2">
                       <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusDisplay.color} ${statusDisplay.bgColor}`}>
                         {statusDisplay.text}
-                        {entry.submissionRound > 1 && (
+                        {entry.submissionRound !== undefined && entry.submissionRound > 1 && (
                           <span className="ml-1 text-xs opacity-75">
                             (Round {entry.submissionRound})
                           </span>
                         )}
                       </span>
-                      <span className="text-sm text-gray-500">
-                        {formatDate(entry.timestamp)}
-                      </span>
+                      {entry.timestamp ? (
+                        <span className="text-sm text-gray-500">
+                          {formatDate(entry.timestamp)}
+                        </span>
+                      ) : (
+                        <span className="text-sm text-gray-500">
+                          Unknown time
+                        </span>
+                      )}
                     </div>
                     
                     <div className="text-sm text-gray-600 mb-2">
