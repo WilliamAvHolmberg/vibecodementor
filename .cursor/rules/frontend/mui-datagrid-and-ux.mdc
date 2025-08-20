@@ -1,0 +1,17 @@
+---
+description: MUI DataGrid and UX patterns in this repo
+globs: frontend/src/**/*.ts,frontend/src/**/*.tsx
+alwaysApply: false
+---
+
+### **Server-driven grid**
+- Pagination, sorting, and quick filter map to API params (`search`, `page`, `pageSize`, optional `sort`).
+- Debounce quick filter input; trigger refetch on param changes.
+
+### **Columns**
+- Keep renderers accessible; use links where useful (e.g., `mailto:` for emails).
+- Format dates with locale-aware display.
+
+### **Styling**
+- Compact density; subtle row striping; no focus outlines on cells/headers.
+- Contain grid within a surface with clear borders.

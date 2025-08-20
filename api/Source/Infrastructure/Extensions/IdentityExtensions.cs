@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Source.Infrastructure;
 using Source.Features.Users.Models;
+using Source.Infrastructure.AuthorizationServices;
 
 namespace Source.Infrastructure.Extensions;
 
@@ -25,6 +26,9 @@ public static class IdentityExtensions
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
+
+        // Register role seeder service
+        services.AddScoped<RoleSeederService>();
 
         return services;
     }

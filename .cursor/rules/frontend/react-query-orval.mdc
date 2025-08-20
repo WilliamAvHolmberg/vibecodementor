@@ -1,0 +1,22 @@
+---
+description: React Query + Orval usage and patterns
+globs: frontend/src/**/*.ts,frontend/src/**/*.tsx,frontend/orval.config.ts
+alwaysApply: false
+---
+
+### **Generated client**
+- Source: OpenAPI at `http://localhost:5001/swagger/v1/swagger.json`.
+- Output: `src/api/generated.ts`; client: `react-query`, http: `fetch`.
+
+### **Queries**
+- Use generated hooks (e.g., `useGetApiUsers`) with explicit params objects.
+- Set reasonable `staleTime`/`gcTime`; prefer refetch on param changes rather than manual invalidates.
+
+### **Mutations**
+- Use generated mutations (e.g., `usePostApiUsers`). On success, invalidate relevant query keys via generated key helpers.
+
+### **Error/loading UX**
+- Provide user feedback via MUI components (alerts/snackbars). Keep forms responsive.
+
+### **Data shapes**
+- Keep API-aligned DTOs; avoid ad hoc client models when the API already defines types.

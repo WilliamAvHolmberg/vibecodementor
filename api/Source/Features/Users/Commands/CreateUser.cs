@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Source.Features.Users.Models;
+using Source.Infrastructure.AuthorizationModels;
 using Source.Shared.CQRS;
 using Source.Shared.Results;
 
 namespace Source.Features.Users.Commands;
 
-public record CreateUserCommand(string Email, string Password, string? FirstName = null, string? LastName = null) : ICommand<Result<CreateUserResponse>>;
+public record CreateUserCommand(string Email, string? FirstName = null, string? LastName = null, List<string>? Roles = null) : ICommand<Result<CreateUserResponse>>;
 
 public record CreateUserResponse(string UserId, string Email, string FullName);
 
@@ -37,11 +38,29 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Resul
             LastName = request.LastName
         };
 
-        var result = await _userManager.CreateAsync(user, request.Password);
+        var result = await _userManager.CreateAsync(user);
         if (!result.Succeeded)
         {
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
             return Result.Failure<CreateUserResponse>($"User creation failed: {errors}");
+        }
+
+        // Assign roles if provided, default to "User"
+        var rolesToAssign = request.Roles?.Any() == true ? request.Roles : new List<string> { RoleConstants.User };
+        
+        if (rolesToAssign.Any())
+        {
+            var roleResult = await _userManager.AddToRolesAsync(user, rolesToAssign);
+            if (!roleResult.Succeeded)
+            {
+                var errors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
+                _logger.LogError("Failed to assign roles to user {Email}: {Errors}", request.Email, errors);
+                // Don't fail the creation, just log the error
+            }
+            else
+            {
+                _logger.LogInformation("Assigned roles {Roles} to user {Email}", string.Join(", ", rolesToAssign), request.Email);
+            }
         }
 
         _logger.LogInformation("Successfully created user {Email} with ID {UserId}", request.Email, user.Id);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Source.Features.Users.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,6 +15,7 @@ public class JwtTokenService : IJwtTokenService
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<JwtTokenService> _logger;
+    private readonly UserManager<User> _userManager;
 
     // Cache configuration values for performance
     private readonly string _jwtKey;
@@ -21,10 +23,11 @@ public class JwtTokenService : IJwtTokenService
     private readonly string _jwtAudience;
     private readonly int _expiryMinutes;
 
-    public JwtTokenService(IConfiguration configuration, ILogger<JwtTokenService> logger)
+    public JwtTokenService(IConfiguration configuration, ILogger<JwtTokenService> logger, UserManager<User> userManager)
     {
         _configuration = configuration;
         _logger = logger;
+        _userManager = userManager;
 
         // Load JWT configuration once
         _jwtKey = _configuration["Jwt:Key"] ?? "your-secret-key-here-minimum-32-characters-long";
@@ -36,20 +39,20 @@ public class JwtTokenService : IJwtTokenService
             _expiryMinutes, Math.Round(_expiryMinutes / 1440.0, 1));
     }
 
-    public string GenerateToken(User user, string? authMethod = null)
+    public async Task<string> GenerateTokenAsync(User user, string? authMethod = null)
     {
-        var (token, _) = GenerateTokenWithExpiry(user, authMethod);
+        var (token, _) = await GenerateTokenWithExpiryAsync(user, authMethod);
         return token;
     }
 
-    public (string Token, DateTime ExpiresAt) GenerateTokenWithExpiry(User user, string? authMethod = null)
+    public async Task<(string Token, DateTime ExpiresAt)> GenerateTokenWithExpiryAsync(User user, string? authMethod = null)
     {
         var expiresAt = DateTime.UtcNow.AddMinutes(_expiryMinutes);
         
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var claims = BuildUserClaims(user, authMethod);
+        var claims = await BuildUserClaimsAsync(user, authMethod);
 
         var token = new JwtSecurityToken(
             issuer: _jwtIssuer,
@@ -60,8 +63,9 @@ public class JwtTokenService : IJwtTokenService
 
         var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-        _logger.LogInformation("🎫 Generated JWT token for user {Email} (Method: {AuthMethod}, Expires: {ExpiresAt})", 
-            user.Email, authMethod ?? "unknown", expiresAt);
+        var userRoles = await _userManager.GetRolesAsync(user);
+        _logger.LogInformation("🎫 Generated JWT token for user {Email} (Roles: {Roles}, Method: {AuthMethod}, Expires: {ExpiresAt})", 
+            user.Email, string.Join(", ", userRoles), authMethod ?? "unknown", expiresAt);
 
         return (tokenString, expiresAt);
     }
@@ -95,7 +99,7 @@ public class JwtTokenService : IJwtTokenService
         }
     }
 
-    private static List<Claim> BuildUserClaims(User user, string? authMethod)
+    private async Task<List<Claim>> BuildUserClaimsAsync(User user, string? authMethod)
     {
         var claims = new List<Claim>
         {
@@ -127,6 +131,13 @@ public class JwtTokenService : IJwtTokenService
         if (!string.IsNullOrEmpty(user.FullName.Trim()))
         {
             claims.Add(new Claim(ClaimTypes.Name, user.FullName));
+        }
+
+        // Add role claims
+        var userRoles = await _userManager.GetRolesAsync(user);
+        foreach (var role in userRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
         return claims;

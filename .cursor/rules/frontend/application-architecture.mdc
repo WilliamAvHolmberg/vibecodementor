@@ -1,0 +1,69 @@
+---
+description: Multi-application architecture patterns and routing
+globs: frontend/src/**/*.ts,frontend/src/**/*.tsx
+alwaysApply: false
+---
+
+### **Application Concept**
+- Applications are distinct business domains (admin, booking, reports, etc.)
+- Each application has its own features, routing, and user permissions
+- Users can have access to one or multiple applications based on their roles
+
+### **Route Definitions**
+- Each application defines routes in `routes.ts` using TypeScript interfaces
+- Routes specify component names for dynamic loading, not hardcoded JSX
+- Include metadata for navigation, permissions, and UI hints
+
+```typescript
+// applications/admin/routes.ts
+export const adminRoutes: ApplicationRoutes = {
+  appId: 'admin',
+  name: 'Administration',
+  basePath: '/admin',
+  permissions: ['admin.access'],
+  routes: [
+    {
+      path: '/users',
+      component: 'UsersListPage',
+      title: 'Users',
+      meta: {
+        sidebar: true,
+        icon: 'people'
+      }
+    }
+  ]
+}
+```
+
+### **Dynamic Component Loading**
+- Component names resolve to lazy-loaded modules within the application
+- Use predictable file paths: `pages/${componentName}.tsx`
+- Implement loading states and error boundaries for dynamic imports
+
+### **Smart Navigation Logic**
+- If user has access to only one application: redirect directly to that app
+- If user has access to multiple applications: show application selector dashboard
+- App-level permission checks occur before route resolution
+- Graceful handling when user loses access to current application
+
+### **Cross-Application Patterns**
+- Start with code isolated within each application
+- Lift components/hooks to `shared/` only when needed by 2+ applications
+- Shared code should be well-documented and have clear ownership
+- Prefer composition over inheritance for shared UI components
+
+### **Navigation Structure**
+```
+AppShell
+├── Dashboard (multi-app selector)
+├── Application Container
+│   ├── App-specific layout
+│   ├── App-specific navigation
+│   └── Feature pages
+```
+
+### **Permission Integration**
+- Applications define required permissions for access
+- Features within applications can have additional permission requirements
+- Auth context provides user permissions for routing decisions
+- Handle permission changes gracefully during user session

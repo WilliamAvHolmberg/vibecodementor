@@ -1,0 +1,16 @@
+---
+description: Strict protocol for creating new files to avoid duplication and drift
+alwaysApply: true
+---
+
+### **Before creating any new file**
+- Run an explicit directory listing of the target folder.
+- Search the entire repo with fuzzy/name and content search for similar filenames and responsibilities.
+- Check parent/related feature folders and existing imports/usages.
+- Prefer editing existing files over adding new ones.
+- If still unsure, ask for explicit approval before creating the file.
+
+### **After creating a file**
+- Add only focused content; avoid broad refactors.
+- Ensure build passes; lint if applicable.
+- Add tests/docs where meaningful.

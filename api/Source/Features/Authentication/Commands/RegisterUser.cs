@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Source.Features.Users.Events;
 using Source.Features.Users.Models;
+using Source.Infrastructure.AuthorizationModels;
 using Source.Shared.CQRS;
 using Source.Shared.Results;
 
@@ -58,7 +59,10 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand, Result<R
             return Result.Failure<RegisterUserResponse>($"Registration failed: {errors}");
         }
 
-        _logger.LogInformation("Successfully registered user {Email} with ID {UserId}", request.Email, user.Id);
+        // Assign default "User" role to new registrations
+        await _userManager.AddToRoleAsync(user, RoleConstants.User);
+        
+        _logger.LogInformation("Successfully registered user {Email} with ID {UserId} and assigned User role", request.Email, user.Id);
         
         // 🚀 PUBLISH UserCreated EVENT - This triggers the welcome email!
         var userCreatedEvent = new UserCreated(user.Id, user.Email!, DateTime.UtcNow);

@@ -16,7 +16,7 @@ public record GetAllUsersResponse(
     int TotalPages
 );
 
-public record UserListItem(string Id, string Email, string FullName, DateTime CreatedAt);
+public record UserListItem(string Id, string Email, string FullName, DateTime CreatedAt, List<string> Roles);
 
 public class GetAllUsersHandler : IQueryHandler<GetAllUsersQuery, Result<GetAllUsersResponse>>
 {
@@ -47,17 +47,25 @@ public class GetAllUsersHandler : IQueryHandler<GetAllUsersQuery, Result<GetAllU
         var totalCount = await query.CountAsync(cancellationToken);
         var totalPages = (int)Math.Ceiling((double)totalCount / request.PageSize);
 
-        var users = await query
+        var usersData = await query
             .OrderBy(u => u.CreatedAt)
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
-            .Select(u => new UserListItem(
-                u.Id,
-                u.Email!,
-                u.FullName,
-                u.CreatedAt
-            ))
             .ToListAsync(cancellationToken);
+
+        // Fetch roles for each user
+        var users = new List<UserListItem>();
+        foreach (var user in usersData)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            users.Add(new UserListItem(
+                user.Id,
+                user.Email!,
+                user.FullName,
+                user.CreatedAt,
+                roles.ToList()
+            ));
+        }
 
         var response = new GetAllUsersResponse(
             users,

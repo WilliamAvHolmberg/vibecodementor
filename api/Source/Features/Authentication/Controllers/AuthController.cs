@@ -166,6 +166,36 @@ public class AuthController : ControllerBase
         _logger.LogInformation("User logged out - auth cookie cleared");
         return Ok(new { message = "Logged out successfully" });
     }
+
+    /// <summary>
+    /// Create the first SuperAdmin user (one-time setup)
+    /// Only works if no SuperAdmin exists in the system
+    /// </summary>
+    [HttpPost("create-super-admin")]
+    [ProducesResponseType<CreateSuperAdminResponse>(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(409)]
+    public async Task<ActionResult<CreateSuperAdminResponse>> CreateSuperAdmin([FromBody] CreateSuperAdminRequest request)
+    {
+        var command = new CreateSuperAdminCommand(request.Email, request.FirstName, request.LastName);
+        var result = await _mediator.Send(command);
+
+        if (result.IsSuccess)
+        {
+            _logger.LogInformation("✅ SuperAdmin created successfully: {Email}", request.Email);
+            return CreatedAtAction(nameof(GetMe), result.Value);
+        }
+
+        // Check if it's a "SuperAdmin already exists" error for proper HTTP status
+        if (result.Error.Contains("already exists"))
+        {
+            _logger.LogWarning("🚫 SuperAdmin creation blocked: {Error}", result.Error);
+            return Conflict(new { error = result.Error });
+        }
+
+        _logger.LogWarning("❌ SuperAdmin creation failed: {Error}", result.Error);
+        return BadRequest(new { error = result.Error });
+    }
 }
 
 /// <summary>
@@ -202,4 +232,13 @@ public record VerifyOtpRequest(
 /// <summary>
 /// Response for OTP verification with cookie
 /// </summary>
-public record VerifyOtpCookieResponse(string Message, string Email); 
+public record VerifyOtpCookieResponse(string Message, string Email);
+
+/// <summary>
+/// Request model for creating SuperAdmin
+/// </summary>
+public record CreateSuperAdminRequest(
+    [Required] [EmailAddress] string Email,
+    string? FirstName,
+    string? LastName
+); 

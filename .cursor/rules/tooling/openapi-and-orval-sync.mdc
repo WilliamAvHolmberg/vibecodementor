@@ -1,0 +1,16 @@
+---
+description: Keep OpenAPI and generated clients in sync
+globs: frontend/orval.config.ts,backend/Program.cs  
+alwaysApply: false
+---
+
+### **OpenAPI source**
+- Ensure backend exposes Swagger at `v1` (dev only visible is fine).
+
+### **Client generation**
+- Regenerate clients when API contracts change.
+- Verify generated types match backend DTOs and pagination contracts.
+
+### **Local dev**
+- Ensure CORS policy allows frontends on `http://localhost:5173` and `:5174`.
+- Confirm ports and URLs in `orval.config.ts` stay accurate.
