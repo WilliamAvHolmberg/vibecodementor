@@ -15,7 +15,7 @@ public interface IJwtTokenService
     /// <param name="user">The authenticated user</param>
     /// <param name="authMethod">Authentication method used (password, otp, etc.)</param>
     /// <returns>JWT token string</returns>
-    string GenerateToken(User user, string? authMethod = null);
+    Task<string> GenerateTokenAsync(User user, string? authMethod = null);
 
     /// <summary>
     /// Generate JWT token with expiry information
@@ -23,7 +23,7 @@ public interface IJwtTokenService
     /// <param name="user">The authenticated user</param>
     /// <param name="authMethod">Authentication method used</param>
     /// <returns>Token and expiry details</returns>
-    (string Token, DateTime ExpiresAt) GenerateTokenWithExpiry(User user, string? authMethod = null);
+    Task<(string Token, DateTime ExpiresAt)> GenerateTokenWithExpiryAsync(User user, string? authMethod = null);
 
     /// <summary>
     /// Validate JWT token and extract claims

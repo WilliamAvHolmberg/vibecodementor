@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Source.Features.Users.Models;
+using Source.Infrastructure.AuthorizationModels;
+using Source.Infrastructure.AuthorizationExtensions;
 using Source.Shared.CQRS;
 using Source.Shared.Results;
 using System.Security.Claims;
@@ -14,7 +16,7 @@ public record GetCurrentUserQuery(ClaimsPrincipal User) : IQuery<Result<CurrentU
 /// <summary>
 /// Response for current user information
 /// </summary>
-public record CurrentUserResponse(string UserId, string Email, bool IsAuthenticated);
+public record CurrentUserResponse(string UserId, string Email, bool IsAuthenticated, List<string> Roles);
 
 /// <summary>
 /// Handler for getting current user information
@@ -34,7 +36,7 @@ public class GetCurrentUserHandler : IQueryHandler<GetCurrentUserQuery, Result<C
     {
         if (!request.User.Identity?.IsAuthenticated == true)
         {
-            return Result.Success(new CurrentUserResponse("", "", false));
+            return Result.Success(new CurrentUserResponse("", "", false, new List<string>()));
         }
 
         var userId = request.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -51,9 +53,13 @@ public class GetCurrentUserHandler : IQueryHandler<GetCurrentUserQuery, Result<C
             return Result.Failure<CurrentUserResponse>("User not found");
         }
 
-        _logger.LogInformation("Retrieved current user info for {Email}", user.Email);
+        // Get user roles as strings
+        var roleNames = await _userManager.GetRolesAsync(user);
 
-        var response = new CurrentUserResponse(user.Id, user.Email!, true);
+        _logger.LogInformation("Retrieved current user info for {Email} with roles: {Roles}", 
+            user.Email, string.Join(", ", roleNames));
+
+        var response = new CurrentUserResponse(user.Id, user.Email!, true, roleNames.ToList());
         return Result.Success(response);
     }
 } 

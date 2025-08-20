@@ -57,7 +57,7 @@ public class LoginUserHandler : ICommandHandler<LoginUserCommand, Result<LoginUs
         }
 
         // Generate JWT token using centralized service
-        var (token, expiresAt) = _jwtTokenService.GenerateTokenWithExpiry(user, "password");
+        var (token, expiresAt) = await _jwtTokenService.GenerateTokenWithExpiryAsync(user, "password");
 
         _logger.LogInformation("Successfully logged in user {Email}", request.Email);
 

@@ -1,6 +1,7 @@
 using Source.Infrastructure.Services.Email;
 using Source.Infrastructure.Services.FileStorage;
 using Source.Infrastructure.Services.RealTime;
+using Source.Infrastructure.Services.Sms;
 using Source.Features.ATA.Services;
 using Resend;
 
@@ -52,6 +53,20 @@ public static class ServicesExtensions
         // ATA Services
         services.AddScoped<ATANotificationService>();
         services.AddScoped<ATATimelineService>();
+
+        // SMS Service - Configurable provider
+        var smsProvider = configuration["Sms:Provider"] ?? "Console";
+        switch (smsProvider.ToUpperInvariant())
+        {
+            case "ELKS":
+                services.AddHttpClient<ElksSmsService>();
+                services.AddScoped<ISmsService, ElksSmsService>();
+                break;
+            case "CONSOLE":
+            default:
+                services.AddScoped<ISmsService, ConsoleSmsService>();
+                break;
+        }
 
         return services;
     }

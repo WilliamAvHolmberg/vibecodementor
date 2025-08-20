@@ -1,0 +1,79 @@
+---
+description: Frontend application-based vertical-slice architecture and file layout
+globs: frontend/src/**/*.ts,frontend/src/**/*.tsx
+alwaysApply: false
+---
+
+### **Goals**
+- Organize by application domain, then by feature within each application.
+- Each application represents a distinct business domain with role-based access.
+- Co-locate UI, hooks, feature-specific types, and API glue inside the application slice.
+- Keep cross-application concerns in `shared/` and root-level setup in `app/`.
+
+### **Target structure**
+```
+frontend/src/
+  applications/
+    admin/
+      features/
+        users/
+          pages/          # route-level pages for this feature
+            UsersListPage.tsx
+            UserDetailPage.tsx
+          components/     # UI components only used by this feature
+            UsersTable.tsx
+          hooks/          # feature-specific hooks (state, adapters around generated client)
+            useCreateUser.ts
+            useUsersQuery.ts
+          types/          # local DTOs if needed; prefer server DTOs
+          index.ts        # re-exports for convenience
+        settings/
+          pages/
+          components/
+          hooks/
+      routes.ts           # Application route definitions (TypeScript)
+      index.tsx           # Application entry point
+    booking/
+      features/
+        reservations/
+        calendar/
+        customers/
+      routes.ts
+      index.tsx
+    reports/
+      features/
+        financial-reports/
+        export/
+      routes.ts
+      index.tsx
+  shared/                 # Cross-application shared code
+    routing/
+      types.ts            # Route interfaces
+      RouteEngine.tsx     # Dynamic route processor
+    components/ui/        # Design system components
+    auth/
+    api/
+      generated.ts        # Orval output (do not edit)
+  app/                    # Root application setup
+    AppShell.tsx          # Main navigation logic and app routing
+    Dashboard.tsx         # Multi-app selector for users with multiple app access
+    providers.tsx         # Global providers (React Query, theme, auth)
+```
+
+### **Application Boundaries**
+- Each application represents a distinct business domain with specific user roles.
+- Applications are isolated by default - users access applications based on permissions.
+- Code stays within application unless needed by 2+ applications, then lift to `shared/`.
+
+### **Conventions**
+- Pages live under `applications/<app>/features/<feature>/pages/`.
+- Components in `components/` are presentation-focused; no remote I/O.
+- Hooks adapt generated client functions to the feature's needs (params, mapping, cache keys).
+- Prefer server DTOs from `api/generated`; only create local `types` when projecting for UI.
+- Re-export feature API from `applications/<app>/features/<feature>/index.ts` for clean imports.
+
+### **Routing**
+- Each application defines routes in `routes.ts` using TypeScript interfaces.
+- Route definitions specify component names for dynamic loading.
+- Smart navigation: single app access = direct redirect, multi-app = dashboard selector.
+- App-level permission checks before route resolution.

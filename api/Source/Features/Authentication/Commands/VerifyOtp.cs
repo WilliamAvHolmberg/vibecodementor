@@ -86,7 +86,7 @@ public class VerifyOtpHandler : ICommandHandler<VerifyOtpCommand, Result<VerifyO
         }
 
         // Generate JWT token using centralized service
-        var (token, expiresAt) = _jwtTokenService.GenerateTokenWithExpiry(user, "otp");
+        var (token, expiresAt) = await _jwtTokenService.GenerateTokenWithExpiryAsync(user, "otp");
 
         _logger.LogInformation("✅ OTP verified successfully for user: {Email}", request.Email);
 

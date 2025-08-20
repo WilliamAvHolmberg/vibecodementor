@@ -22,6 +22,7 @@ builder.Services.AddRealTimeServices();
 builder.Services.AddMetricsServices();
 builder.Services.AddRateLimitingServices();
 builder.Services.AddOpenRouterServices(builder.Configuration);
+builder.Services.AddTelemetryServices(builder.Configuration);
 builder.Services.AddSwaggerServices();
 
 var app = builder.Build();
@@ -40,11 +41,6 @@ app.UseSwaggerInDevelopment();
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Log connection string from environment variable
-var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
-Console.WriteLine("ASD--------------------------------");
-Console.WriteLine($"Connection string from env: {connectionString}");
 
 // Hangfire Dashboard (only in development and when Hangfire is enabled)
 if (app.Environment.IsDevelopment())
