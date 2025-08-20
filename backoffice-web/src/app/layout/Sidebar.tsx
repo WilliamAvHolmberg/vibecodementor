@@ -3,6 +3,7 @@ import AppsIcon from '@mui/icons-material/Apps'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useCurrentApplication } from '../navigation/useCurrentApplication'
 import { getAppNavigationItems } from '../routing/routeBuilder'
+import { NavigationItem } from '../routing/types'
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const navigate = useNavigate()
@@ -12,6 +13,20 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const go = (to: string) => () => {
     navigate(to)
     onNavigate?.()
+  }
+
+  // Smart selection logic that works for flat navigation and future nested routes
+  const isSelected = (currentPath: string, item: NavigationItem): boolean => {
+    // Exact match always wins (both leaf and parent routes)
+    if (currentPath === item.path) return true
+    
+    // If item has children, stay selected when on any child route
+    if (item.children && item.children.length > 0) {
+      return item.children.some(child => isSelected(currentPath, child))
+    }
+    
+    // For leaf routes (no children), only exact match
+    return false
   }
 
   // Get navigation items for current app, or show app selector
@@ -35,13 +50,12 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         {/* Current App Navigation */}
         {navigationItems.map((item) => {
           const Icon = item.icon
-          const isSelected = pathname === item.path || 
-                           (item.path !== '/' && pathname.startsWith(item.path))
+          const selected = isSelected(pathname, item)
           
           return (
             <ListItemButton 
               key={item.path}
-              selected={isSelected} 
+              selected={selected} 
               onClick={go(item.path)} 
               sx={{ mb: 0.5 }}
             >
