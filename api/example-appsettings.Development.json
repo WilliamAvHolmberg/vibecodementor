@@ -27,6 +27,14 @@
       "FromEmail": "dev@yourdomain.com"
     }
   },
+  "Sms": {
+    "Provider": "Console",
+    "Elks": {
+      "Username": "your-46elks-username",
+      "Password": "your-46elks-password",
+      "From": "123456" 
+    }
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information",
