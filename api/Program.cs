@@ -22,6 +22,7 @@ builder.Services.AddRealTimeServices();
 builder.Services.AddMetricsServices();
 builder.Services.AddRateLimitingServices();
 builder.Services.AddOpenRouterServices(builder.Configuration);
+builder.Services.AddTelemetryServices(builder.Configuration);
 builder.Services.AddSwaggerServices();
 
 var app = builder.Build();
